@@ -1,6 +1,6 @@
 # Guarded Validity-Fitness Convergence Skills
 
-A self-correcting skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — sweeper, guardian, fixer, optimizer — iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
+A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — sweeper, guardian, fixer, optimizer — iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
 
 ## How it works
 
