@@ -1,0 +1,272 @@
+---
+name: _template-guarded-validity-fitness-convergence
+description: "Template for guarded validity-fitness convergence skills. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where a guardian orchestrates parallel sweeper (validity) and optimizer (fitness) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
+---
+
+# Guarded Validity-Fitness Convergence — Skill Template
+
+Copy this template directory, rename it, and fill in the domain-specific content.
+
+## Instantiation Checklist
+
+- [ ] Rename directory from `_template-guarded-validity-fitness-convergence` to your skill name
+- [ ] Update `name` and `description` in SKILL.md frontmatter
+- [ ] Fill in `references/constraints.md` — hard-reject and scored constraints for the domain
+- [ ] Fill in `references/domain.md` — field knowledge, quality signals, norms
+- [ ] Fill in `references/context.md` — audience, venue, thresholds, weighting signals
+- [ ] Replace the `<!-- DOMAIN: -->` pre-flight checks in SKILL.md with domain-specific checks
+- [ ] Replace the `<!-- DOMAIN: -->` confidence rubric in SKILL.md with domain-specific thresholds (or keep defaults)
+- [ ] Add domain-specific validation scripts to `scripts/` (see `scripts/README.md` for the pattern)
+- [ ] Populate `references/gotchas.md` after first real run — add entries whenever an agent gets something wrong
+- [ ] Create test cases in `evals/evals.json`
+
+## Ontology
+
+### Core (universal, never changes)
+
+| Term | Definition |
+|------|-----------|
+| **Artifact** | The thing being worked on. |
+| **Finding** | Something detected in the artifact — a potential or confirmed violation of constraints (from sweeper) or a coherence/fitness issue (from optimizer). |
+| **Fix** | A surgical change to the artifact at the finding level. |
+| **Optimization** | A coherence or fitness improvement to the artifact at the whole level. |
+| **Residual** | Findings the loop could not resolve. Surfaces to the human. |
+| **Confidence** | Per-finding scores on two independent dimensions: issue confidence (is this a real problem) and fix confidence (is the proposed fix correct). |
+
+### Roles
+
+Each role has fixed responsibilities defined by the template. Domain-specific competencies are slotted in per instantiation.
+
+| Role | Responsibility | Sees |
+|------|---------------|------|
+| **Guardian** | Orchestrates the entire process. Dispatches sweeper and optimizer. Receives their reports. Merges findings into a single fix report. Dispatches fixer. Holds state across rounds. Decides when the loop is done or when to surface residual. Starts and ends the skill. | Constraints + Domain + Context |
+| **Sweeper** | Surfaces, catalogs, and assesses confidence of potential or confirmed constraint violations. Compares the artifact against constraints. Cannot judge whether findings should be actioned — only report. Runs on every round in parallel with optimizer. | Constraints only. Ignores domain and context. |
+| **Optimizer** | Assesses the overall coherence, fitness, and quality of the artifact within its domain and context. Produces findings with fix suggestions. Runs on every round in parallel with sweeper, including when sweeper finds nothing — guaranteeing at least one complete loop. | Domain + Context only. Ignores constraints. |
+| **Fixer** | Surgically applies fixes from the guardian's fix report. Uses minimal context: the fix report and the constraints. Makes the smallest change that resolves each finding. The only agent that touches the artifact. | Fix report + Constraints only. |
+
+### Slotted per instantiation
+
+| Term | Definition |
+|------|-----------|
+| **Domain** | The field the skill operates in. Determines what the sweeper's competencies are, what the optimizer evaluates for, and what the fixer needs to know. |
+| **Context** | The specific situation — the journal, codebase, project, audience. Determines thresholds, confidence weighting, what counts as common knowledge. |
+| **Constraints** | The rules that define valid. Defined by domain and context together. Classified as hard-reject (binary) or scored (confidence-weighted). The sweeper measures against these. The guardian enforces these. |
+
+## Rules
+
+These are the structural rules of the system. They govern how roles, constraints, findings, and the loop relate. A domain instantiation sets its own constraints, competencies, and thresholds — but it cannot change these rules.
+
+1. All four roles must be spawned as independent subagents. The invoking agent (the one the user asked to run the skill) must never assume any role itself. The guardian, sweeper, optimizer, and fixer are each a separate subagent with no shared context beyond what the skill explicitly passes between them. **Why:** An agent that produced the artifact, or that has been in conversation with the user about it, cannot be an unbiased guardian or sweeper. Prior context creates anchoring — the agent already has opinions about what's right. Independence ensures the guardian evaluates findings on their merits against the constraint set, not through the lens of earlier decisions. The invoking agent's only job is to spawn the guardian subagent with the skill instructions and the artifact path, then relay results to the user.
+
+2. The guardian owns the process. It starts the skill, dispatches agents, receives all reports, produces fix reports, holds state, and is the only agent that can end the skill or surface residual to the human. **Why:** A single orchestrator prevents race conditions, ensures consistent state, and gives the human one point of contact for the entire skill.
+
+3. The sweeper's only responsibility is to surface, catalog, and assess confidence of potential or confirmed violations of constraints. It compares the artifact against constraints but cannot judge whether findings should be actioned — only report them. It sees constraints only. It does not see domain or context. **Why:** Separating detection from judgment prevents the sweeper from self-censoring findings based on domain conventions. A constraint violation is a constraint violation regardless of whether the domain considers it acceptable — the guardian resolves that tension with full context.
+
+4. The optimizer's only responsibility is to assess the overall coherence, fitness, and quality of the artifact within its domain and context. It produces a findings report with fix suggestions. It sees domain and context only. It does not see constraints. **Why:** Separating fitness from validity prevents the optimizer from anchoring on rule compliance instead of quality. An artifact can satisfy every constraint and still be incoherent — the optimizer catches what rules can't express.
+
+5. The sweeper and optimizer run in parallel every round. Both produce identically structured findings reports. Neither sees the other's report. Each looks at the artifact fresh with its own lens. **Why:** Parallel dispatch prevents cross-contamination between the validity and fitness lenses. If the sweeper saw the optimizer's report, it would anchor on fitness concerns and lose its strict constraint focus. If the optimizer saw the sweeper's report, it would anchor on violations and miss whole-artifact issues. Independent assessment from opposite directions produces richer signal for the guardian to merge.
+
+6. The optimizer runs a minimum of once per skill invocation — even if the sweeper returns clean. **Why:** An artifact that satisfies all constraints may still be unfit for its audience. Guaranteeing one optimizer pass prevents the skill from terminating on structural validity alone without ever assessing fitness.
+
+7. The guardian receives both reports, evaluates all findings, and merges them into a single fix report. The fix report is the only input the fixer receives. The guardian resolves conflicts between sweeper and optimizer findings. **Why:** The guardian is the only agent with the full picture (constraints + domain + context). Conflicts between validity and fitness — a sweeper finding that the optimizer would dismiss, or an optimizer finding that would violate a constraint — can only be resolved by an agent that sees both sides.
+
+8. The fixer's only responsibility is to surgically apply fixes from the guardian's fix report. It uses minimal context: the fix report and the constraints. It makes the smallest change that resolves each finding. It is the only agent that touches the artifact. **Why:** Minimal context prevents the fixer from second-guessing the guardian's decisions or expanding scope beyond what was approved. Smallest-change discipline minimizes blast radius — each fix is isolated, and any interaction effects are caught by the sweeper on the next round.
+
+9. If the guardian's merged fix report is empty (neither sweeper nor optimizer found anything actionable), the skill is done. **Why:** Empty fix report means the artifact satisfies constraints (sweeper clean) and is fit for purpose (optimizer clean). There is nothing left to improve within the skill's defined boundaries.
+
+10. If the fix report has findings, the fixer works. After the fixer completes, the guardian dispatches sweeper and optimizer again in parallel for a fresh round against the modified artifact. **Why:** Fixes can introduce new issues or reveal issues that were masked by the original problems. A fresh parallel sweep on the modified artifact is the only way to verify convergence.
+
+11. Confidence is scored per-finding with two independent dimensions: issue confidence and fix confidence. Weighting signals are domain-specific. **Why:** A finding can be certainly wrong but hard to fix (high issue, low fix) or easy to fix but uncertain (low issue, high fix). Scoring both dimensions independently lets the guardian make nuanced decisions — escalating real problems without confident fixes, dropping uncertain problems regardless of how easy they'd be to fix.
+
+12. The loop is bounded. After N cycles (default: 3), unresolved findings become residual and surface to the human with full context. **Why:** Without bounds, a model correcting itself is an infinite loop. Diminishing returns set in quickly — if three rounds of sweeper/optimizer/fixer can't resolve a finding, it's likely a judgment call that requires human input.
+
+13. Recurring findings — the same issue appearing after being fixed in a previous round — escalate to the human regardless of confidence. **Why:** A finding that survives its own fix is evidence that the fix was wrong or that the issue is structural. Continuing to auto-fix it wastes cycles. The human needs to see it.
+
+14. No agent accumulates report context across rounds. Sweeper and optimizer look at the artifact and their respective lens (constraints or domain+context) fresh each time. Only the guardian holds history. **Why:** Stale context from previous rounds would bias detection. The sweeper might skip re-checking something it found before, assuming the fix landed. The optimizer might anchor on issues from round 1 instead of assessing the current artifact. Fresh assessment each round ensures findings reflect the artifact's actual state.
+
+## The Loop
+
+```
+Guardian dispatches Sweeper + Optimizer (parallel)
+  → Both produce findings reports (identical structure)
+  → Guardian merges into single fix report
+    → Fix report empty → done
+    → Fix report has findings → Fixer works
+      → Guardian dispatches Sweeper + Optimizer again (parallel)
+      → Guardian merges new reports into fix report
+        → Empty → done
+        → Findings → Fixer works → loop
+        → Bound hit → residual to human
+```
+
+## Pre-flight
+
+Before entering the loop, the guardian verifies:
+
+<!-- DOMAIN: Replace with domain-specific pre-flight checks -->
+- [ ] Artifact exists and is in expected state
+- [ ] Previous pipeline stage completion criteria met (if applicable)
+- [ ] Required input files present
+
+If pre-flight fails, stop and report what's missing. Do not enter the loop.
+
+## Findings Report Format
+
+Sweeper and optimizer produce identically structured reports:
+
+```json
+{
+  "source": "sweeper | optimizer",
+  "round": 1,
+  "findings": [
+    {
+      "id": "F001",
+      "location": {
+        "file": "artifact file path",
+        "position": "location within file",
+        "context": "surrounding content for verification"
+      },
+      "description": "what the issue is, stated precisely",
+      "evidence": "why this is an issue — the specific violation or degradation observed",
+      "confidence": {
+        "issue": 0.92,
+        "fix": 0.85
+      },
+      "suggested_fix": {
+        "old": "exact content to replace",
+        "new": "exact replacement content",
+        "rationale": "why this fix resolves the finding"
+      }
+    }
+  ],
+  "summary": {
+    "total_findings": 0,
+    "by_confidence": {
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  }
+}
+```
+
+## Fix Report Format
+
+The guardian produces a fix report for the fixer:
+
+```json
+{
+  "round": 1,
+  "fixes": [
+    {
+      "finding_id": "F001",
+      "source": "sweeper | optimizer",
+      "location": {
+        "file": "artifact file path",
+        "position": "location within file"
+      },
+      "description": "what to fix",
+      "fix": {
+        "old": "exact content to replace",
+        "new": "exact replacement content"
+      },
+      "guardian_notes": "any adjustments the guardian made to the suggested fix"
+    }
+  ],
+  "dropped": [
+    {
+      "finding_id": "F003",
+      "source": "sweeper",
+      "reason": "issue confidence below threshold (0.52)"
+    }
+  ],
+  "escalated": [
+    {
+      "finding_id": "F007",
+      "source": "optimizer",
+      "reason": "issue confidence high (0.91) but fix confidence low (0.43) — surfacing issue without fix"
+    }
+  ]
+}
+```
+
+## Residual Format
+
+When the guardian surfaces residual to the human:
+
+```markdown
+## Residual — [N] rounds completed
+
+### Unresolved findings
+[For each unresolved finding:]
+- **Source**: sweeper | optimizer
+- **Location**: where in the artifact
+- **Description**: what the issue is
+- **Issue confidence**: X% — [why this score]
+- **What was tried**: [fix attempts across rounds]
+- **Why unresolved**: [specific reason]
+
+### Round history
+- Round 1: [N] findings from sweeper, [M] from optimizer, [K] fixed
+- Round 2: [N] findings, [M] fixed
+- Round N: [N] unresolved → surfaced
+```
+
+## Confidence Scoring
+
+Every finding carries two independent scores:
+
+- **Issue confidence** — how certain this is actually a problem
+- **Fix confidence** — how certain the proposed fix is correct
+
+<!-- DOMAIN: Replace with domain-specific confidence rubric and thresholds -->
+
+Default thresholds (tune per skill):
+- Auto-approve: issue >= 0.85 AND fix >= 0.85
+- Escalate issue only: issue >= 0.85 AND fix < 0.85
+- Drop: issue < 0.60
+
+## Progressive Disclosure
+
+The SKILL.md stays under 500 lines. Domain-specific detail lives in reference files. Each agent loads only what it needs.
+
+### Agent files (role → responsibilities → competencies)
+
+| File | Loads |
+|------|-------|
+| `agents/sweeper.md` | `references/constraints.md` |
+| `agents/guardian.md` | `references/constraints.md` + `references/domain.md` + `references/context.md` |
+| `agents/fixer.md` | `references/constraints.md` + (fix report from guardian) |
+| `agents/optimizer.md` | `references/domain.md` + `references/context.md` |
+
+### Reference files (slotted per instantiation)
+
+| File | Purpose | Loaded by |
+|------|---------|-----------|
+| `references/constraints.md` | The rules that define valid. Hard-reject and scored constraints. | Sweeper, Guardian, Fixer |
+| `references/domain.md` | The field. Quality signals, norms, conventions. | Optimizer, Guardian |
+| `references/context.md` | The specific situation. Audience, venue, thresholds. | Optimizer, Guardian |
+| `references/gotchas.md` | Mistakes agents will make without being told. Populated after real runs. | All agents |
+
+### Other
+
+- `scripts/` — bundled validation scripts returning structured JSON (see `scripts/README.md` for design pattern and example)
+- `evals/` — test cases per skill-creator framework
+
+## Template Directory Structure
+
+```
+<skill-name>/
+├── SKILL.md                    # Loop orchestration, rules, ontology, report formats
+├── agents/
+│   ├── sweeper.md              # Role → responsibilities → competencies (constraints only)
+│   ├── guardian.md             # Role → responsibilities → competencies (full picture)
+│   ├── fixer.md                # Role → responsibilities → competencies (fix report + constraints)
+│   └── optimizer.md            # Role → responsibilities → competencies (domain + context only)
+├── scripts/                    # Bundled validation scripts returning structured JSON
+│   └── (domain-specific)
+├── references/                 # Domain knowledge loaded on demand
+│   └── (domain-specific)
+└── evals/                      # Test cases per skill-creator framework
+    └── evals.json
+```
