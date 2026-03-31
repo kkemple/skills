@@ -1,6 +1,6 @@
 # Context — Mathematical Verification
 
-Loaded by: Optimizer, Guardian
+Loaded by: Optimizer, Orchestrator
 
 ## Audience
 

@@ -1,7 +1,7 @@
 # Context
 
 <!-- Replace this file's contents when instantiating the template. -->
-<!-- This file is loaded by: Optimizer, Guardian -->
+<!-- This file is loaded by: Optimizer, Orchestrator -->
 
 The specific situation this skill instance operates in. The audience, the venue, the project, the standards that apply right now.
 

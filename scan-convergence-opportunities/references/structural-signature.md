@@ -31,7 +31,7 @@ Look for: the gap between what CI checks and what reviewers catch, between what'
 When you find something that passes all four conditions, describe it the same way the known patterns are structured:
 
 - **Artifact type** — what it is
-- **Validity** — the mechanical constraints (what the sweeper would check)
+- **Validity** — the mechanical constraints (what the validator would check)
 - **Fitness** — the quality dimension (what the optimizer would assess)
 - **Audience** — who receives or reviews the artifact
 

@@ -1,7 +1,7 @@
 # Constraints
 
 <!-- Replace this file's contents when instantiating the template. -->
-<!-- This file is loaded by: Sweeper, Guardian, Fixer -->
+<!-- This file is loaded by: Validator, Orchestrator, Fixer -->
 
 The rules that define valid. Each constraint is either hard-reject (binary — violated or not) or scored (confidence-weighted).
 

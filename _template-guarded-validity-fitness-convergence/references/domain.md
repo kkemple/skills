@@ -1,7 +1,7 @@
 # Domain
 
 <!-- Replace this file's contents when instantiating the template. -->
-<!-- This file is loaded by: Optimizer, Guardian -->
+<!-- This file is loaded by: Optimizer, Orchestrator -->
 
 The field this skill operates in. What quality looks like. What the norms are. What a competent practitioner in this field expects.
 

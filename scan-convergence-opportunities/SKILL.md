@@ -59,7 +59,7 @@ For each convergence opportunity:
 
 **What it is:** [description of the artifact in this project]
 
-**Validity dimension:** [structural rules — what a sweeper would check]
+**Validity dimension:** [structural rules — what a validator would check]
 - [specific rules inferred from configs/schemas/CI]
 
 **Fitness dimension:** [quality for audience — what an optimizer would assess]

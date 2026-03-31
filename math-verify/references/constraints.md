@@ -1,6 +1,6 @@
 # Constraints — Mathematical Verification
 
-Loaded by: Sweeper, Guardian, Fixer
+Loaded by: Validator, Orchestrator, Fixer
 
 ## Hard-reject constraints
 

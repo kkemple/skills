@@ -5,7 +5,7 @@ description: "Create a self-correcting validation skill that iteratively improve
 
 # Create Convergence Skill
 
-This skill creates a new guarded validity-fitness convergence skill — a self-correcting system where four independent agents (sweeper, guardian, fixer, optimizer) iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
+This skill creates a new guarded validity-fitness convergence skill — a self-correcting system where four independent agents (validator, orchestrator, fixer, optimizer) iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
 
 The output is a complete, ready-to-run skill directory.
 
@@ -27,7 +27,7 @@ Follow the same rhythm as any skill creation: understand intent, interview for d
 Have a conversation with the user to understand their domain. Extract answers to these questions — not as a checklist, but from what they describe:
 
 - **What's the artifact?** The thing they work on repeatedly (code files, config manifests, API schemas, design components, documents, data pipelines).
-- **What are the structural rules?** Things that are definitively right or wrong — spec compliance, required fields, security policies, naming conventions, formatting requirements. These become the sweeper's constraints.
+- **What are the structural rules?** Things that are definitively right or wrong — spec compliance, required fields, security policies, naming conventions, formatting requirements. These become the validator's constraints.
 - **What makes it good for the audience?** Readability, coherence, usability, performance, clarity — things a reviewer would flag as "technically correct but not good." These become the optimizer's domain and context.
 - **Who's the audience?** The people who receive or review the artifact — teammates, users, referees, compliance reviewers. Determines what "fit" means.
 - **What goes wrong?** Common mistakes, recurring review feedback, known pitfalls. These seed the gotchas file.
@@ -48,7 +48,7 @@ Separate what the user described into:
 - **Confidence signals** — what makes issue confidence higher or lower for this specific constraint
 
 Also draft:
-- A **hard exclusion note** — what this skill does NOT check (to prevent the sweeper from overreaching into other skills' scope)
+- A **hard exclusion note** — what this skill does NOT check (to prevent the validator from overreaching into other skills' scope)
 - The **pre-flight checks** — what must be true before the loop starts
 - The **confidence rubric** — how mechanical vs judgment-based checks are weighted
 
@@ -93,7 +93,7 @@ If the user has a sample artifact, offer to run the new skill against it as vali
 - The instantiation checklist in the template SKILL.md must be removed after filling in — it's template scaffolding that confuses the agent when the skill runs
 - The two `<!-- DOMAIN: -->` placeholders in SKILL.md (pre-flight and confidence rubric) are easy to miss — check for them explicitly during validation
 - Constraint IDs must be consistent between constraints.md and any references in the confidence rubric — C06 in one must mean C06 in the other
-- The hard exclusion note at the bottom of constraints.md is critical — without it, the sweeper will overreach into domains that belong to other skills (e.g., flagging grammar in a math-verify skill)
+- The hard exclusion note at the bottom of constraints.md is critical — without it, the validator will overreach into domains that belong to other skills (e.g., flagging grammar in a math-verify skill)
 - Agent files should NOT be modified during instantiation — they define roles and responsibilities that are universal across all convergence skills. Domain-specific competencies come from the reference files.
 - Cover letters or markdown files with Unicode math characters will break pandoc PDF generation — always use LaTeX inline math in any file that might be converted to PDF
 

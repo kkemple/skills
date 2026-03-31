@@ -1,6 +1,6 @@
 # Scripts
 
-Bundled validation scripts that return structured JSON. The sweeper and guardian can invoke these as part of their checks for deterministic, programmatically verifiable constraints.
+Bundled validation scripts that return structured JSON. The validator and orchestrator can invoke these as part of their checks for deterministic, programmatically verifiable constraints.
 
 ## Design principles
 
@@ -10,7 +10,7 @@ Scripts in this directory follow agentic use patterns:
 
 2. **`--help` documents the interface.** The agent reads `--help` to learn flags, expected inputs, and usage examples. Keep it concise — it enters the agent's context.
 
-3. **Structured JSON to stdout.** Output findings as JSON matching the findings report format in SKILL.md. This lets the sweeper incorporate script output directly into its report.
+3. **Structured JSON to stdout.** Output findings as JSON matching the findings report format in SKILL.md. This lets the validator incorporate script output directly into its report.
 
 4. **Diagnostics to stderr.** Progress messages, warnings, and debug info go to stderr so stdout stays parseable.
 
@@ -49,7 +49,7 @@ Scripts should output JSON matching this structure (subset of the findings repor
 }
 ```
 
-The sweeper incorporates script findings into its report, adding confidence scores based on the constraint type (script-verified findings from deterministic checks typically get high issue confidence).
+The validator incorporates script findings into its report, adding confidence scores based on the constraint type (script-verified findings from deterministic checks typically get high issue confidence).
 
 ## Example
 

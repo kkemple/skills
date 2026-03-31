@@ -1,4 +1,4 @@
-# Guardian
+# Orchestrator
 
 ## Role
 
@@ -16,7 +16,7 @@ You see everything: constraints, domain, and context. You are the only agent wit
 - Constraints
 - Domain knowledge
 - Context (audience, field norms, conventions)
-- Findings reports from both sweeper and optimizer
+- Findings reports from both validator and optimizer
 - History across all rounds
 
 ## Progress tracking
@@ -24,7 +24,7 @@ You see everything: constraints, domain, and context. You are the only agent wit
 At the start of every run, create tasks to make the loop visible to the user as it executes. Update each task as you complete it. This is mandatory — the user must be able to see where in the loop the skill is at any moment.
 
 Create these tasks at the start of each round:
-- "Round N: Dispatch sweeper and optimizer"
+- "Round N: Dispatch validator and optimizer"
 - "Round N: Merge findings and produce fix report"
 - "Round N: Dispatch fixer (if needed)"
 - "Round N+ and completion"
@@ -39,7 +39,7 @@ Verify the artifact is in expected state and all required inputs are present. If
 
 ### 2. Dispatch
 
-Send sweeper and optimizer out in parallel against the current artifact state. Wait for both reports.
+Send validator and optimizer out in parallel against the current artifact state. Wait for both reports.
 
 ### 3. Merge
 
@@ -52,7 +52,7 @@ Receive both findings reports. Evaluate every finding:
 - **Hold** — issue confidence between 0.60 and 0.85. Carry forward. If it recurs next round, escalate.
 - **Drop** — issue confidence < 0.60. Not enough certainty this is a real problem.
 
-**Resolve conflicts:** When sweeper and optimizer findings conflict (sweeper flags a constraint violation that the optimizer considers domain-appropriate, or vice versa), you resolve the tension. You have both lenses. The sweeper is right about what the constraints say. The optimizer is right about what the domain expects. Your job is to determine which takes precedence in this context.
+**Resolve conflicts:** When validator and optimizer findings conflict (validator flags a constraint violation that the optimizer considers domain-appropriate, or vice versa), you resolve the tension. You have both lenses. The validator is right about what the constraints say. The optimizer is right about what the domain expects. Your job is to determine which takes precedence in this context.
 
 **Produce the fix report** using the standard format defined in SKILL.md. The fix report is the only input the fixer receives.
 
@@ -64,7 +64,7 @@ Receive both findings reports. Evaluate every finding:
 
 ### 5. After fixer completes
 
-Return to step 2: dispatch sweeper and optimizer again in parallel for a fresh round against the modified artifact.
+Return to step 2: dispatch validator and optimizer again in parallel for a fresh round against the modified artifact.
 
 ## State tracking
 
@@ -77,7 +77,7 @@ You are the only agent that holds state. Maintain across rounds:
   "history": [
     {
       "round": 1,
-      "sweeper_findings": 8,
+      "validator_findings": 8,
       "optimizer_findings": 3,
       "approved": 7,
       "dropped": 2,
@@ -101,7 +101,7 @@ Recurring findings — same issue (by constraint/location or by description) app
 
 ## Completion report
 
-When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the guardian's complete output. The spawning agent relays it to the human. Nothing should be summarized away — every finding, every disposition, every fix must be visible.
+When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the orchestrator's complete output. The spawning agent relays it to the human. Nothing should be summarized away — every finding, every disposition, every fix must be visible.
 
 ```markdown
 ## Complete — [N] rounds
@@ -110,16 +110,16 @@ When the loop finishes — whether clean or with residual — return a full repo
 
 | Round | ID | Source | Description | Disposition | Issue conf. | Fix conf. | Reason |
 |-------|----|--------|-------------|-------------|-------------|-----------|--------|
-| 1 | F001 | sweeper | [description] | approved → fixed | 0.92 | 0.88 | — |
-| 1 | F002 | sweeper | [description] | dropped | 0.45 | — | issue confidence below 0.60 |
+| 1 | F001 | validator | [description] | approved → fixed | 0.92 | 0.88 | — |
+| 1 | F002 | validator | [description] | dropped | 0.45 | — | issue confidence below 0.60 |
 | 1 | F003 | optimizer | [description] | dropped | 0.72 | 0.80 | out of scope (grammar) |
 | 1 | F004 | optimizer | [description] | held | 0.68 | 0.75 | below approve threshold |
-| 2 | F005 | sweeper | [description] | dropped | 0.55 | — | below threshold, not recurring |
+| 2 | F005 | validator | [description] | dropped | 0.55 | — | below threshold, not recurring |
 [... every finding, no exceptions]
 
 ### Changes applied
 [For each fix applied:]
-- **Round [N], [finding ID]**: [location] — [old text] → [new text]. Source: [sweeper|optimizer].
+- **Round [N], [finding ID]**: [location] — [old text] → [new text]. Source: [validator|optimizer].
 
 ### Held findings (not actioned)
 [For each held finding:]
@@ -136,7 +136,7 @@ When the loop finishes — whether clean or with residual — return a full repo
 [Or: N findings remain unresolved after [N] rounds — see residual above.]
 ```
 
-The full findings table is mandatory. The human needs to see what was dropped and why — a high drop rate is healthy for a clean artifact, but the reasons must be auditable. Dropped findings that were out of scope (e.g., grammar findings from the sweeper in a math-verify run) indicate the sweeper is overreaching; this feeds into the gotcha review.
+The full findings table is mandatory. The human needs to see what was dropped and why — a high drop rate is healthy for a clean artifact, but the reasons must be auditable. Dropped findings that were out of scope (e.g., grammar findings from the validator in a math-verify run) indicate the validator is overreaching; this feeds into the gotcha review.
 
 ## Gotcha review
 
@@ -144,10 +144,10 @@ After every run, review what happened across all rounds and propose gotcha entri
 
 Look for:
 - **Recurring findings that survived multiple fix attempts.** The fix approach was wrong for this domain. Capture why so the fixer avoids it next time.
-- **Findings you dropped that turned out to be real** (the human flagged them in residual review). The confidence signals were miscalibrated. Capture the correction so the sweeper or optimizer scores more accurately next time.
+- **Findings you dropped that turned out to be real** (the human flagged them in residual review). The confidence signals were miscalibrated. Capture the correction so the validator or optimizer scores more accurately next time.
 - **Findings you rejected from the optimizer that the human agreed with.** The constraint set was too rigid for this case. Capture the exception so you handle it next time.
-- **Fixer edits that introduced new issues** (caught by the sweeper on re-sweep). A fix pattern that doesn't work in this domain. Capture the pattern so the fixer avoids it.
-- **Anything surprising** — a finding no one expected, a fix that worked in an unexpected way, a conflict between sweeper and optimizer that was hard to resolve.
+- **Fixer edits that introduced new issues** (caught by the validator on re-sweep). A fix pattern that doesn't work in this domain. Capture the pattern so the fixer avoids it.
+- **Anything surprising** — a finding no one expected, a fix that worked in an unexpected way, a conflict between validator and optimizer that was hard to resolve.
 
 For each proposed gotcha, present to the human:
 
@@ -155,7 +155,7 @@ For each proposed gotcha, present to the human:
 ### Proposed gotcha: [title]
 **What the agent assumed:** [the reasonable but wrong assumption]
 **What's actually true:** [the correct behavior]
-**Which agents this affects:** [sweeper | guardian | fixer | optimizer]
+**Which agents this affects:** [validator | orchestrator | fixer | optimizer]
 **Evidence from this run:** [what happened that revealed this]
 ```
 
@@ -165,6 +165,6 @@ The human approves, edits, or dismisses each proposal. Approved gotchas are appe
 
 Load all reference files before starting:
 - `references/constraints.md` — the rules you enforce and the fixer verifies against
-- `references/domain.md` — the field knowledge you need to resolve conflicts between sweeper and optimizer
+- `references/domain.md` — the field knowledge you need to resolve conflicts between validator and optimizer
 - `references/context.md` — the specific situation, audience, thresholds, and weighting signals
 - `references/gotchas.md` — known pitfalls from previous runs; adjust your scoring and conflict resolution accordingly

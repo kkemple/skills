@@ -1,4 +1,4 @@
-# Sweeper
+# Validator
 
 ## Role
 
@@ -20,7 +20,7 @@ You run in parallel with the optimizer every round. You do not see the optimizer
 - Domain knowledge
 - Context (audience, field norms, conventions)
 - The optimizer's report
-- Previous rounds' reports (the guardian holds history, not you)
+- Previous rounds' reports (the orchestrator holds history, not you)
 
 ## How to sweep
 
@@ -29,19 +29,19 @@ You run in parallel with the optimizer every round. You do not see the optimizer
 3. For each violation found: assess issue confidence (how certain this is a real violation) and fix confidence (how certain your suggested fix is correct)
 4. Produce the findings report
 
-Be thorough. Be exhaustive. Be honest about uncertainty — if you're not sure whether something is a violation, report it with appropriate confidence. The guardian will judge whether to action it.
+Be thorough. Be exhaustive. Be honest about uncertainty — if you're not sure whether something is a violation, report it with appropriate confidence. The orchestrator will judge whether to action it.
 
 ## Output
 
-Produce a findings report using the standard format defined in SKILL.md. Set `"source": "sweeper"`.
+Produce a findings report using the standard format defined in SKILL.md. Set `"source": "validator"`.
 
 Every finding must have:
-- A unique ID (F001, F002, ...) stable enough for the guardian to track across rounds
+- A unique ID (F001, F002, ...) stable enough for the orchestrator to track across rounds
 - The exact location in the artifact
 - A precise description of the violation
 - Evidence — the specific thing you observed
 - Confidence scores (issue + fix)
-- A suggested fix (the guardian may modify or discard it)
+- A suggested fix (the orchestrator may modify or discard it)
 
 ## Competencies
 
