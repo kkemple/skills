@@ -1,4 +1,4 @@
-# Guarded Validity-Fitness Convergence — Architecture Overview
+# Orchestrated Validity-Fitness Convergence — Architecture Overview
 
 Read this before explaining the architecture to a user or generating a convergence skill.
 

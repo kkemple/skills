@@ -5,7 +5,7 @@ description: "Create a self-correcting validation skill that iteratively improve
 
 # Create Convergence Skill
 
-This skill creates a new guarded validity-fitness convergence skill — a self-correcting system where four independent agents (validator, orchestrator, fixer, optimizer) iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
+This skill creates a new orchestrated validity-fitness convergence skill — a self-correcting system where four independent agents (validator, orchestrator, fixer, optimizer) iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
 
 The output is a complete, ready-to-run skill directory.
 
