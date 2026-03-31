@@ -1,4 +1,4 @@
-# Orchestrated Role-based Validity-Fitness Enforcement Skills
+# Orchestrated Role-based Validity-Fitness Enforcement
 
 A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — validator, orchestrator, fixer, optimizer — iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
 

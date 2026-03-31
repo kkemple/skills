@@ -1,6 +1,6 @@
 ---
 name: _template-orchestrated-role-based-validity-fitness-enforcement
-description: "Template for orchestrated role-based validity-fitness enforcement skills. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (validity) and optimizer (fitness) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
+description: "Template for orchestrated role-based validity-fitness enforcement. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (validity) and optimizer (fitness) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
 ---
 
 # Orchestrated Role-based Validity-Fitness Enforcement — Skill Template
