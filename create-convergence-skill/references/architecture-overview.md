@@ -1,4 +1,4 @@
-# Orchestrated Validity-Fitness Convergence — Architecture Overview
+# Orchestrated Role-based Validity-Fitness Enforcement — Architecture Overview
 
 Read this before explaining the architecture to a user or generating a convergence skill.
 

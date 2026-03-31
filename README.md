@@ -1,4 +1,4 @@
-# Orchestrated Validity-Fitness Convergence Skills
+# Orchestrated Role-based Validity-Fitness Enforcement Skills
 
 A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — validator, orchestrator, fixer, optimizer — iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
 
@@ -17,7 +17,7 @@ The separation is the key insight: validity and fitness are orthogonal. An artif
 
 ```
 skills/
-├── _template-orchestrated-validity-fitness-convergence/   # The architecture
+├── _template-orchestrated-role-based-validity-fitness-enforcement/   # The architecture
 ├── create-convergence-skill/                          # Generates new skills from the template
 ├── math-verify/                                       # A real instance (mathematical paper verification)
 └── scan-convergence-opportunities/                    # Discovers where to apply the architecture
@@ -75,7 +75,7 @@ The fastest path:
 
 Or manually:
 
-1. Copy `_template-orchestrated-validity-fitness-convergence/` to your skills directory
+1. Copy `_template-orchestrated-role-based-validity-fitness-enforcement/` to your skills directory
 2. Fill in `references/constraints.md` with your structural rules
 3. Fill in `references/domain.md` with your field knowledge
 4. Fill in `references/context.md` with your audience and thresholds
