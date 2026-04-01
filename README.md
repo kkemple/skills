@@ -64,6 +64,16 @@ Orchestrator dispatches Validator + Optimizer (parallel)
 
 **The catalog grows from use.** The scanner's known patterns catalog expands when users confirm new convergence opportunities, making future scans smarter.
 
+## Canonical References
+
+Some reference files are shared across skills as copies. Each skill loads its own copy at runtime — there is no shared directory. When the canonical source changes, update the copies listed below.
+
+| Canonical source | Consuming skills (copy location) |
+|---|---|
+| `draft-computations/references/computational-environment.md` | `verify-computations/references/domain.md` (embedded), `package-paper/references/computational-environment.md` |
+
+The copies must stay in sync manually. A stale copy means that skill runs against outdated tool versions or missing packages.
+
 ## Creating your own convergence skill
 
 The fastest path:

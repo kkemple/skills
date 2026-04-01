@@ -58,9 +58,18 @@ Receive both findings reports. Evaluate every finding:
 
 ### 4. Decide
 
-- **Fix report empty** (no approved findings from either source) → **done**. Report completion summary.
+- **Fix report empty** (no approved findings from either source) → **resolve all held findings** (see below), then **done**. Report completion summary.
 - **Fix report has findings** → dispatch fixer.
-- **Iteration bound hit** → surface residual to human.
+- **Iteration bound hit** → **resolve all held findings** (see below), then surface residual to human.
+
+### Resolving held findings at loop termination
+
+"Held" is a between-rounds state only — it means "carry forward to see if it recurs." When the loop terminates for any reason (clean, bound hit, or fix report empty), every held finding MUST be resolved:
+
+- **Drop** it — confidence didn't increase across rounds, not recurring, or the issue is not a real problem for the target audience. This is the default disposition for held findings at termination.
+- **Escalate** it — recurred after a fix attempt, or confidence rose above 0.85 on re-inspection.
+
+A final report with "held" findings is **invalid**. It presents issues with no resolution path and forces the human to do triage the orchestrator should have completed. The held column in the completion report should always be empty.
 
 ### 5. After fixer completes
 
@@ -121,9 +130,9 @@ When the loop finishes — whether clean or with residual — return a full repo
 [For each fix applied:]
 - **Round [N], [finding ID]**: [location] — [old text] → [new text]. Source: [validator|optimizer].
 
-### Held findings (not actioned)
-[For each held finding:]
-- **[ID]**: [description]. Issue confidence: [X]. Why held: [reason]. Rounds seen: [list].
+### Dropped findings (with reasons)
+[For each dropped finding, including those resolved from held at termination:]
+- **[ID]**: [description]. Issue confidence: [X]. Why dropped: [reason].
 
 ### Escalated findings (surfaced to human)
 [For each escalated finding, if any:]
