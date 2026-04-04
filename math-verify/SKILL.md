@@ -1,6 +1,6 @@
 ---
 name: math-verify
-description: "Verify mathematical correctness of a drafted journal paper using orchestrated role-based validity-fitness enforcement. Use this skill when the user wants to check proofs, validate logical steps, verify invoked results, audit notation consistency, or confirm that theorem hypotheses are necessary and sufficient. Trigger on phrases like 'verify the math', 'check the proofs', 'is this correct', 'audit the paper', 'mathematical review', or when a paper draft has just been completed and needs validation before copy editing."
+description: "Verify mathematical correctness of a drafted journal paper using orchestrated multi-role adherence-coherence convergence. Use this skill when the user wants to check proofs, validate logical steps, verify invoked results, audit notation consistency, or confirm that theorem hypotheses are necessary and sufficient. Trigger on phrases like 'verify the math', 'check the proofs', 'is this correct', 'audit the paper', 'mathematical review', or when a paper draft has just been completed and needs validation before copy editing."
 ---
 
 # Mathematical Verification

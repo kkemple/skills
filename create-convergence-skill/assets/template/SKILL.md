@@ -1,15 +1,15 @@
 ---
-name: _template-orchestrated-role-based-validity-fitness-enforcement
-description: "Template for orchestrated role-based validity-fitness enforcement. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (validity) and optimizer (fitness) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
+name: _template-orchestrated-multi-role-adherence-coherence-convergence
+description: "Template for orchestrated multi-role adherence-coherence convergence. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (adherence) and optimizer (coherence) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
 ---
 
-# Orchestrated Role-based Validity-Fitness Enforcement — Skill Template
+# Orchestrated Multi-role Adherence-Coherence Convergence — Skill Template
 
 Copy this template directory, rename it, and fill in the domain-specific content.
 
 ## Instantiation Checklist
 
-- [ ] Rename directory from `_template-orchestrated-role-based-validity-fitness-enforcement` to your skill name
+- [ ] Rename directory from `_template-orchestrated-multi-role-adherence-coherence-convergence` to your skill name
 - [ ] Update `name` and `description` in SKILL.md frontmatter
 - [ ] Fill in `references/constraints.md` — hard-reject and scored constraints for the domain
 - [ ] Fill in `references/domain.md` — field knowledge, quality signals, norms

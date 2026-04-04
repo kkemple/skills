@@ -1,6 +1,6 @@
-# Orchestrated Role-based Validity-Fitness Enforcement
+# Orchestrated Multi-role Adherence-Coherence Convergence
 
-A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — validator, orchestrator, fixer, optimizer — iteratively validate and improve an artifact until it satisfies both structural constraints and fitness for its audience.
+A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — validator, orchestrator, fixer, optimizer — iteratively validate and improve an artifact until it achieves both adherence to structural constraints and coherence for its audience.
 
 ## How it works
 
@@ -11,25 +11,22 @@ Two agents assess the artifact in parallel from opposite directions:
 
 A **Orchestrator** merges both reports, resolves conflicts between validity and fitness, and produces a fix report. A **Fixer** applies surgical corrections. The loop repeats until both lenses come back clean or the iteration bound is hit — at which point unresolved findings surface to the human.
 
-The separation is the key insight: validity and fitness are orthogonal. An artifact can satisfy every rule and still be incoherent for its audience. It can be beautifully fit for purpose and structurally wrong. Both lenses applied independently and merged by a single adjudicator produce better results than either alone.
+The separation is the key insight: adherence and coherence are orthogonal. An artifact can satisfy every rule and still be incoherent for its audience. It can be beautifully coherent and structurally wrong. Both lenses applied independently and merged by a single adjudicator produce better results than either alone.
 
 ## What's in this repo
 
 ```
 skills/
-├── _template-orchestrated-role-based-validity-fitness-enforcement/   # The architecture
-├── create-convergence-skill/                          # Generates new skills from the template
+├── create-convergence-skill/                          # Generates new skills from the bundled template
 ├── math-verify/                                       # A real instance (mathematical paper verification)
 └── scan-convergence-opportunities/                    # Discovers where to apply the architecture
 ```
 
-### Template
-
-The core architecture. Four agent files (validator, orchestrator, fixer, optimizer) define roles and responsibilities that don't change between domains. Three reference file templates (constraints, domain, context) get filled in per domain. Copy this directory and fill in the reference files to create a new convergence skill.
-
-### Creator
+### Creator (includes the template)
 
 A skill that generates new convergence skills through an interview process. It asks about your artifact, structural rules, quality dimensions, and audience — then produces a complete skill directory from the template. Modeled after the [skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) pattern.
+
+The core architecture template lives at `create-convergence-skill/assets/template/`. Four agent files (validator, orchestrator, fixer, optimizer) define roles and responsibilities that don't change between domains. Three reference file templates (constraints, domain, context) get filled in per domain.
 
 ### Math Verify
 
@@ -37,7 +34,7 @@ A working instance that verifies mathematical correctness of journal papers. Dem
 
 ### Scanner
 
-Surveys a project and identifies artifacts that exhibit validity-fitness duality — where both structural rules and quality for an audience matter. Produces a report of opportunities with recommended convergence skills to create. Maintains a growing catalog of known patterns and can recognize structural isomorphisms in unfamiliar territory.
+Surveys a project and identifies artifacts that exhibit adherence-coherence duality — where both structural rules and quality for an audience matter. Produces a report of opportunities with recommended convergence skills to create. Maintains a growing catalog of known patterns and can recognize structural isomorphisms in unfamiliar territory.
 
 ## The convergence loop
 
@@ -85,7 +82,7 @@ The fastest path:
 
 Or manually:
 
-1. Copy `_template-orchestrated-role-based-validity-fitness-enforcement/` to your skills directory
+1. Copy `create-convergence-skill/assets/template/` to your skills directory and rename it
 2. Fill in `references/constraints.md` with your structural rules
 3. Fill in `references/domain.md` with your field knowledge
 4. Fill in `references/context.md` with your audience and thresholds

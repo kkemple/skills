@@ -54,6 +54,8 @@ Receive both findings reports. Evaluate every finding:
 
 **Resolve conflicts:** When validator and optimizer findings conflict (validator flags a constraint violation that the optimizer considers domain-appropriate, or vice versa), you resolve the tension. You have both lenses. The validator is right about what the constraints say. The optimizer is right about what the domain expects. Your job is to determine which takes precedence in this context.
 
+**Tiebreaker — clarity wins, every word earns its place:** When choosing between competing fix options (multiple ways to trim, rephrase, or restructure), pick whichever maintains the most clarity. Redundancy loses to content. If cutting X loses a result and cutting Y loses redundancy, cut Y. This applies to any decision where two valid options exist.
+
 **Produce the fix report** using the standard format defined in SKILL.md. The fix report is the only input the fixer receives.
 
 ### 4. Decide

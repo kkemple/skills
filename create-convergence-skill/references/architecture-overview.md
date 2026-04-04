@@ -1,4 +1,4 @@
-# Orchestrated Role-based Validity-Fitness Enforcement — Architecture Overview
+# Orchestrated Multi-role Adherence-Coherence Convergence — Architecture Overview
 
 Read this before explaining the architecture to a user or generating a convergence skill.
 

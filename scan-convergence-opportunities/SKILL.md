@@ -5,7 +5,7 @@ description: "Scan a project to identify artifacts that would benefit from self-
 
 # Scan for Convergence Opportunities
 
-Survey a project and identify artifacts that exhibit validity-fitness duality — both structural rules that can be checked mechanically AND a quality dimension that requires judgment about fitness for an audience. Produce a report of opportunities, teach the user to recognize the pattern, and grow the catalog from what you find.
+Survey a project and identify artifacts that exhibit adherence-coherence duality — both structural rules that can be checked mechanically AND a quality dimension that requires judgment about fitness for an audience. Produce a report of opportunities, teach the user to recognize the pattern, and grow the catalog from what you find.
 
 ## The structural signature
 
