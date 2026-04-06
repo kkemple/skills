@@ -1,38 +1,21 @@
-# Orchestrated Multi-role Adherence-Coherence Convergence
+# Multi-Role Agent Skills
 
-A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) skill architecture for [Claude Code](https://claude.ai/claude-code) where four independent agents — validator, orchestrator, fixer, optimizer — iteratively validate and improve an artifact until it achieves both adherence to structural constraints and coherence for its audience.
+A collection of multi-role agent skills for [Claude Code](https://claude.ai/claude-code). Each skill decomposes a complex task into isolated roles — independent subagents with scoped visibility and fixed responsibilities — that coordinate through structured handoffs.
 
-## How it works
+The core principle across all skills: **an agent that produced something cannot be an unbiased evaluator of that thing.** Role isolation prevents anchoring, scope creep, and self-assessment bias.
 
-Two agents assess the artifact in parallel from opposite directions:
+Built on ideas from:
+- [Agentic Self-Correction](https://kurtiskemple.com/blog/agentic-self-correction/) — generate, validate, correct, repeat
+- [Measuring Context Pollution](https://kurtiskemple.com/blog/measuring-context-pollution/) — detecting semantic drift from original intent
+- [Context Management](https://kurtiskemple.com/blog/context-management-for-long-running-knowledge-extraction-systems/) — maintaining coherence over long-running workflows
 
-- **Validator** checks structural validity against explicit constraints. It sees rules only — not domain knowledge or audience context.
-- **Optimizer** assesses fitness and coherence for the audience. It sees domain and context only — not structural rules.
+## Skills
 
-A **Orchestrator** merges both reports, resolves conflicts between validity and fitness, and produces a fix report. A **Fixer** applies surgical corrections. The loop repeats until both lenses come back clean or the iteration bound is hit — at which point unresolved findings surface to the human.
+### Convergence Skills
 
-The separation is the key insight: adherence and coherence are orthogonal. An artifact can satisfy every rule and still be incoherent for its audience. It can be beautifully coherent and structurally wrong. Both lenses applied independently and merged by a single adjudicator produce better results than either alone.
+A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) architecture where four agents — Orchestrator, Validator, Optimizer, Fixer — iteratively validate and improve an artifact until it achieves both structural validity and coherence for its audience.
 
-
-### Creator (includes the template)
-
-A skill that generates new convergence skills through an interview process. It asks about your artifact, structural rules, quality dimensions, and audience — then produces a complete skill directory from the template. Modeled after the [skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) pattern.
-
-The core architecture template lives at `create-convergence-skill/assets/template/`. Four agent files (validator, orchestrator, fixer, optimizer) define roles and responsibilities that don't change between domains. Three reference file templates (constraints, domain, context) get filled in per domain.
-
-### Complex Workflow
-
-A five-role agent system for planning and executing any complex multi-step task. The Planner locks in a detailed step-by-step plan with the user. The Executor does the work. The Auditor judges every step against the plan before and after execution. The Drift Monitor measures context pollution — the semantic distance between the approved plan and the Orchestrator's accumulated state — and triggers re-anchoring when the Orchestrator drifts. The Orchestrator brokers all communication, owns all state, and is the only agent that decides whether to course correct, re-anchor, or escalate to the human. Not a convergence skill instantiation — a standalone multi-role system that applies the same role isolation principles.
-
-### Math Verify
-
-A working instance that verifies mathematical correctness of journal papers. Demonstrates the architecture in action: the validator checks proof logic, notation consistency, and equation correctness against 26 constraints. The optimizer assesses logical chain coherence, proof architecture quality, and fitness for the target journal's audience. The orchestrator merges, the fixer corrects, and the loop converges.
-
-### Scanner
-
-Surveys a project and identifies artifacts that exhibit adherence-coherence duality — where both structural rules and quality for an audience matter. Produces a report of opportunities with recommended convergence skills to create. Maintains a growing catalog of known patterns and can recognize structural isomorphisms in unfamiliar territory.
-
-## The convergence loop
+Two agents assess the artifact in parallel from opposite directions: the **Validator** checks constraints (rules only, no domain knowledge), the **Optimizer** assesses fitness (domain and audience only, no rules). The **Orchestrator** merges both reports and resolves conflicts. The **Fixer** applies surgical corrections. The loop repeats until both lenses come back clean or the iteration bound is hit.
 
 ```
 Orchestrator dispatches Validator + Optimizer (parallel)
@@ -45,27 +28,31 @@ Orchestrator dispatches Validator + Optimizer (parallel)
       → Unresolved findings → surface to human as residual
 ```
 
+**Instances:**
+- `math-verify/` — verifies mathematical correctness of journal papers against 26 constraints
+- `block-kit-verify/` — validates Slack Block Kit JSON (in progress)
+
+**Tooling:**
+- `create-convergence-skill/` — generates new convergence skills from an interview process; bundles the canonical template at `assets/template/`
+- `scan-convergence-opportunities/` — surveys a project for artifacts that would benefit from convergence skills
+
+### Complex Workflow
+
+A five-role agent system (Orchestrator, Planner, Auditor, Executor, Drift Monitor) for planning and executing any complex multi-step task. Not a convergence skill — different architecture, different roles, different purpose.
+
+The **Planner** locks in a detailed step-by-step plan with the user and is wiped after handoff. The **Executor** does the work. The **Auditor** judges every step against the plan before and after execution. The **Drift Monitor** measures [context pollution](https://kurtiskemple.com/blog/measuring-context-pollution/) — the semantic distance between the approved plan and the Orchestrator's accumulated state — and triggers [re-anchoring](https://kurtiskemple.com/blog/context-management-for-long-running-knowledge-extraction-systems/) when the Orchestrator drifts. The **Orchestrator** brokers all communication, owns all state, and is the only agent that decides whether to course correct, re-anchor, or escalate to the human.
+
 ## Key design decisions
 
 **All roles are independent subagents.** The invoking agent never assumes any role. This prevents anchoring — an agent that produced the artifact can't be an unbiased validator.
 
-**Validator and optimizer never see each other's reports.** Parallel dispatch prevents cross-contamination between the validity and fitness lenses.
+**Scoped visibility.** Each agent sees only what it needs. Agents that assess from different lenses never see each other's reports. Agents that execute never see evaluation criteria.
 
-**Per-finding confidence scoring.** Every finding carries two independent scores: issue confidence (is this a real problem) and fix confidence (is the proposed fix correct). The orchestrator uses both to decide what gets auto-approved, escalated, or dropped.
+**Per-finding confidence scoring.** Every finding carries two independent scores: issue confidence (is this a real problem) and fix confidence / correctability (is the proposed fix correct). The orchestrator uses both to decide what gets auto-approved, escalated, or dropped.
 
-**Gotchas grow from real runs.** Each skill maintains a gotchas file that accumulates operational intelligence — mistakes the agents make that get corrected. The orchestrator proposes new gotchas after every run.
+**Orchestrator-mediated communication.** No agent talks directly to another. The Orchestrator brokers all messages and filters what each agent sees.
 
-**The catalog grows from use.** The scanner's known patterns catalog expands when users confirm new convergence opportunities, making future scans smarter.
-
-## Canonical References
-
-Some reference files are shared across skills as copies. Each skill loads its own copy at runtime — there is no shared directory. When the canonical source changes, update the copies listed below.
-
-| Canonical source | Consuming skills (copy location) |
-|---|---|
-| `draft-computations/references/computational-environment.md` | `verify-computations/references/domain.md` (embedded), `package-paper/references/computational-environment.md` |
-
-The copies must stay in sync manually. A stale copy means that skill runs against outdated tool versions or missing packages.
+**Gotchas grow from real runs.** Each skill maintains a gotchas file that accumulates operational intelligence — mistakes the agents make that get corrected.
 
 ## Creating your own convergence skill
 
@@ -84,10 +71,20 @@ Or manually:
 4. Fill in `references/context.md` with your audience and thresholds
 5. Update `SKILL.md` frontmatter and pre-flight checks
 
+## Canonical References
+
+Some reference files are shared across skills as copies. Each skill loads its own copy at runtime — there is no shared directory. When the canonical source changes, update the copies listed below.
+
+| Canonical source | Consuming skills (copy location) |
+|---|---|
+| `draft-computations/references/computational-environment.md` | `verify-computations/references/domain.md` (embedded), `package-paper/references/computational-environment.md` |
+
+The copies must stay in sync manually. A stale copy means that skill runs against outdated tool versions or missing packages.
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/claude-code) (CLI, desktop app, or IDE extension)
-- Subagent support (the four roles run as independent subagents)
+- Subagent support (the roles run as independent subagents)
 
 ## License
 
