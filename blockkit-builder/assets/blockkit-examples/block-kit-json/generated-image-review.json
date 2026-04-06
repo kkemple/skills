@@ -1,0 +1,57 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "block_id": "lead_message",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Here's your generated image. Review it below and let us know whether you'd like to accept it or try again."
+      }
+    },
+    {
+      "type": "image",
+      "block_id": "generated_image",
+      "image_url": "https://picsum.photos/400/300",
+      "alt_text": "AI-generated image: A scenic landscape with rolling hills and a clear blue sky at golden hour"
+    },
+    {
+      "type": "section",
+      "block_id": "prompt_display",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Prompt:* A scenic landscape with rolling hills and a clear blue sky at golden hour"
+      }
+    },
+    {
+      "type": "actions",
+      "block_id": "image_actions",
+      "elements": [
+        {
+          "type": "button",
+          "action_id": "retry_generation",
+          "text": {
+            "type": "plain_text",
+            "text": "Retry"
+          }
+        },
+        {
+          "type": "button",
+          "action_id": "accept_image",
+          "style": "primary",
+          "text": {
+            "type": "plain_text",
+            "text": "Accept"
+          }
+        },
+        {
+          "type": "button",
+          "action_id": "deny_image",
+          "text": {
+            "type": "plain_text",
+            "text": "Deny"
+          }
+        }
+      ]
+    }
+  ]
+}

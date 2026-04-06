@@ -13,7 +13,7 @@ Built on ideas from:
 
 ### Convergence Skills
 
-A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) architecture where four agents — Orchestrator, Validator, Optimizer, Fixer — iteratively validate and improve an artifact until it achieves both structural validity and coherence for its audience.
+A [self-correcting](https://kurtiskemple.com/blog/agentic-self-correction/) architecture where agents iteratively validate and improve an artifact until it achieves both structural validity and coherence for its audience. The base template has four roles — Orchestrator, Validator, Optimizer, Fixer. Skills may add domain-specific roles (e.g., blockkit-builder adds a Generator for interactive/auto Block Kit production).
 
 Two agents assess the artifact in parallel from opposite directions: the **Validator** checks constraints (rules only, no domain knowledge), the **Optimizer** assesses fitness (domain and audience only, no rules). The **Orchestrator** merges both reports and resolves conflicts. The **Fixer** applies surgical corrections. The loop repeats until both lenses come back clean or the iteration bound is hit.
 
@@ -30,7 +30,7 @@ Orchestrator dispatches Validator + Optimizer (parallel)
 
 **Instances:**
 - `math-verify/` — verifies mathematical correctness of journal papers against 26 constraints
-- `blockkit-builder/` — builds Slack Block Kit JSON (in progress)
+- `blockkit-builder/` — builds and validates Slack Block Kit JSON (5 roles — adds Generator with interactive/auto modes)
 
 **Tooling:**
 - `create-convergence-skill/` — generates new convergence skills from an interview process; bundles the canonical template at `assets/template/`
