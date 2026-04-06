@@ -1,0 +1,52 @@
+{
+  "skill_name": "complex-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to rename the `userId` field to `accountId` across the entire codebase — it's used in the API routes, the database models, the middleware, and the frontend components. There are about 12 files involved and some of them import types that reference it. I want to make sure nothing breaks.",
+      "expected_output": "The skill should produce a detailed plan covering every file that references userId, with specific edit locations, and execute the rename step by step with the Auditor verifying each file change against the plan before and after. No files should be missed, no imports broken.",
+      "files": [],
+      "assertions": [
+        "The Orchestrator spawns a Planner subagent as its first action",
+        "The Planner produces a structured JSON plan with step IDs (S001, S002, etc.)",
+        "Each plan step includes specific file paths, tools, acceptance criteria, and validation protocol",
+        "The Executor returns an execution plan to the Orchestrator before executing",
+        "The Orchestrator passes the execution plan to the Auditor for pre-execution audit",
+        "The Auditor performs post-execution audit checking acceptance criteria",
+        "The post-execution Auditor report goes to the Orchestrator, not to the Executor",
+        "The Orchestrator creates tasks using TaskCreate with verbatim plan step descriptions",
+        "The plan accounts for type imports and cross-file dependencies in the rename order"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We need to migrate our auth from session-based to JWT tokens. That means updating the login endpoint to return a JWT, adding middleware to verify tokens on protected routes, removing the session store dependency, and updating the tests. Walk me through a plan first.",
+      "expected_output": "The Planner should produce a multi-step plan covering: JWT generation in the login endpoint, new auth middleware, removal of session store, test updates. Each step should have specific file paths and acceptance criteria. Execution should follow the plan exactly with Auditor verification at each step.",
+      "files": [],
+      "assertions": [
+        "The Orchestrator spawns a Planner subagent as its first action",
+        "The Planner produces a structured JSON plan with depends_on fields showing step dependencies",
+        "The plan orders steps so JWT middleware exists before session store removal",
+        "Each plan step includes acceptance criteria that are binary pass/fail",
+        "The Orchestrator brokers all communication between Executor and Auditor — no direct exchange",
+        "The Orchestrator receives post-execution audit reports from the Auditor",
+        "The plan includes test updates as a step with validation protocol to run the test suite"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I have a data pipeline script that reads from a CSV, transforms the data, and writes to a Postgres database. I need to add a validation step that checks for duplicate rows and null values before the DB write, add proper error handling so partial failures don't corrupt the table, and add a dry-run mode. Plan this out carefully — the production table has 2M rows and I don't want to mess it up.",
+      "expected_output": "The Planner should produce a cautious plan with validation-first steps, the Executor should implement each piece with the Auditor checking that no destructive operations happen without the validation step being in place first. The plan should respect the dependency chain (validation before writes, dry-run mode before live mode).",
+      "files": [],
+      "assertions": [
+        "The Orchestrator spawns a Planner subagent as its first action",
+        "The plan orders validation step before any database write modifications",
+        "The plan includes dry-run mode implementation before live mode changes",
+        "Each plan step includes acceptance criteria and validation protocol",
+        "The Auditor catches if the Executor proposes skipping validation ordering",
+        "The plan includes error handling with transaction rollback for partial failures",
+        "The Orchestrator sets up the workspace before spawning any agent"
+      ]
+    }
+  ]
+}

@@ -13,20 +13,16 @@ A **Orchestrator** merges both reports, resolves conflicts between validity and 
 
 The separation is the key insight: adherence and coherence are orthogonal. An artifact can satisfy every rule and still be incoherent for its audience. It can be beautifully coherent and structurally wrong. Both lenses applied independently and merged by a single adjudicator produce better results than either alone.
 
-## What's in this repo
-
-```
-skills/
-├── create-convergence-skill/                          # Generates new skills from the bundled template
-├── math-verify/                                       # A real instance (mathematical paper verification)
-└── scan-convergence-opportunities/                    # Discovers where to apply the architecture
-```
 
 ### Creator (includes the template)
 
 A skill that generates new convergence skills through an interview process. It asks about your artifact, structural rules, quality dimensions, and audience — then produces a complete skill directory from the template. Modeled after the [skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) pattern.
 
 The core architecture template lives at `create-convergence-skill/assets/template/`. Four agent files (validator, orchestrator, fixer, optimizer) define roles and responsibilities that don't change between domains. Three reference file templates (constraints, domain, context) get filled in per domain.
+
+### Complex Workflow
+
+A five-role agent system for planning and executing any complex multi-step task. The Planner locks in a detailed step-by-step plan with the user. The Executor does the work. The Auditor judges every step against the plan before and after execution. The Drift Monitor measures context pollution — the semantic distance between the approved plan and the Orchestrator's accumulated state — and triggers re-anchoring when the Orchestrator drifts. The Orchestrator brokers all communication, owns all state, and is the only agent that decides whether to course correct, re-anchor, or escalate to the human. Not a convergence skill instantiation — a standalone multi-role system that applies the same role isolation principles.
 
 ### Math Verify
 
