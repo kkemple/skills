@@ -1,0 +1,68 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "I've analyzed your codebase and found several optimization opportunities. Here's what I recommend:\n\n*Performance Issues:*\n• 3 database queries can be optimized with indexing\n• 2 components are re-rendering unnecessarily\n• Bundle size can be reduced by ~25% with lazy loading\n\n*Next Steps:*\nI can automatically implement these fixes or create detailed tickets for your team to review."
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "💡 *Analysis completed in 2.3s* | 📊 *Confidence: 94%* | 🔍 *15 files scanned*"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "⚡ Background Jobs",
+						"emoji": true
+					},
+					"value": "view_jobs",
+					"action_id": "view_background_jobs"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "⚙️ Settings",
+						"emoji": true
+					},
+					"value": "settings",
+					"action_id": "open_settings"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "📜 History",
+						"emoji": true
+					},
+					"value": "history",
+					"action_id": "view_history"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "❓ Help",
+						"emoji": true
+					},
+					"value": "help",
+					"action_id": "show_help"
+				}
+			]
+		}
+	]
+}

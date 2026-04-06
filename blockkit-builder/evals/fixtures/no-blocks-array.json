@@ -1,0 +1,10 @@
+{
+  "text": "This message has no blocks array",
+  "attachments": [
+    {
+      "fallback": "This is a legacy attachment, not Block Kit",
+      "color": "#36a64f",
+      "title": "Missing blocks"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "eval-001",
+    "name": "Valid simple message — header + section + actions",
+    "mode": "verify",
+    "input": {
+      "surface": "message",
+      "artifact": "evals/fixtures/simple-message.json"
+    },
+    "expected": {
+      "pre_flight": "pass",
+      "convergence": "clean or minor optimizer findings"
+    }
+  },
+  {
+    "id": "eval-002",
+    "name": "Valid modal form — input blocks with various elements",
+    "mode": "verify",
+    "input": {
+      "surface": "modal",
+      "artifact": "evals/fixtures/modal-form.json"
+    },
+    "expected": {
+      "pre_flight": "pass",
+      "convergence": "clean or minor optimizer findings"
+    }
+  },
+  {
+    "id": "eval-003",
+    "name": "Invalid JSON — should fail pre-flight",
+    "mode": "verify",
+    "input": {
+      "surface": "message",
+      "artifact": "evals/fixtures/invalid-json.txt"
+    },
+    "expected": {
+      "pre_flight": "fail",
+      "reason": "not valid JSON"
+    }
+  },
+  {
+    "id": "eval-004",
+    "name": "Surface violation — input block in message",
+    "mode": "verify",
+    "input": {
+      "surface": "message",
+      "artifact": "evals/fixtures/input-in-message.json"
+    },
+    "expected": {
+      "pre_flight": "pass",
+      "convergence": "validator finds surface violation with high issue confidence"
+    }
+  },
+  {
+    "id": "eval-005",
+    "name": "Auto mode — generate from API response",
+    "mode": "generate-auto",
+    "input": {
+      "description": "Display this API response as a Slack message",
+      "data": {
+        "status": "deployed",
+        "service": "api-gateway",
+        "version": "2.4.1",
+        "environment": "production",
+        "timestamp": "2026-04-06T14:30:00Z"
+      }
+    },
+    "expected": {
+      "generation": "produces valid Block Kit JSON for message surface",
+      "convergence": "clean or minor findings"
+    }
+  },
+  {
+    "id": "eval-006",
+    "name": "Interactive mode — approval workflow",
+    "mode": "generate-interactive",
+    "input": {
+      "description": "I need an approval message for deploy requests"
+    },
+    "expected": {
+      "generation": "interviews user, proposes UI plan with approve/deny pattern, produces JSON after confirmation",
+      "convergence": "clean or minor findings"
+    }
+  },
+  {
+    "id": "eval-007",
+    "name": "Missing blocks array — should fail pre-flight",
+    "mode": "verify",
+    "input": {
+      "surface": "message",
+      "artifact": "evals/fixtures/no-blocks-array.json"
+    },
+    "expected": {
+      "pre_flight": "fail",
+      "reason": "no blocks array found"
+    }
+  }
+]

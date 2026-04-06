@@ -1,0 +1,93 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "🤖 Current Task Progress",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Task*\nAnalyze codebase for performance issues"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Status*\n✅ In Progress (2/5 steps)"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "✅ *Scan repository structure*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "✅ *Identify hot paths*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "🔄 *Analyze performance metrics*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "⏳ *Generate recommendations*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "⏳ *Create PR with fixes*"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "🕒 Started: 10 minutes ago | ⏱️ Est. completion: 15 minutes"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Cancel Task",
+						"emoji": true
+					},
+					"style": "danger",
+					"value": "cancel_task"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "View Details",
+						"emoji": true
+					},
+					"value": "view_details"
+				}
+			]
+		}
+	]
+}

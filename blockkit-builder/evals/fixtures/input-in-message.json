@@ -1,0 +1,34 @@
+{
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Quick Survey"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "How was your onboarding experience?"
+      }
+    },
+    {
+      "type": "input",
+      "label": {
+        "type": "plain_text",
+        "text": "Your feedback"
+      },
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "feedback_input",
+        "multiline": true,
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Tell us what you think..."
+        }
+      }
+    }
+  ]
+}

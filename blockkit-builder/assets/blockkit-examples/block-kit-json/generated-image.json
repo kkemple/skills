@@ -1,0 +1,116 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "🎨 Generated Image",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Prompt*\nThai clay pot dish with rice noodles, braised meat, and various Thai condiments on a wooden table"
+			}
+		},
+		{
+			"type": "image",
+			"title": {
+				"type": "plain_text",
+				"text": "Thai Cuisine Presentation",
+				"emoji": true
+			},
+			"image_url": "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
+			"alt_text": "A clay pot dish with rice noodles, braised meat, and various Thai condiments including herbs and sauces served on a wooden table"
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "🎯 *Model:* Stable Diffusion XL"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "⚙️ *Size:* 1024x1024"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "🎲 *Seed:* 12345"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Generation Settings*"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Style:*\nPhotorealistic"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Steps:*\n50"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*CFG Scale:*\n7.5"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Sampler:*\nEuler a"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "🔄 Regenerate",
+						"emoji": true
+					},
+					"style": "primary",
+					"value": "regenerate"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "⚙️ Adjust Settings",
+						"emoji": true
+					},
+					"value": "adjust_settings"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "💾 Save",
+						"emoji": true
+					},
+					"value": "save_image"
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "🕒 Generated at 1:37 PM | 📝 Variations available"
+				}
+			]
+		}
+	]
+}

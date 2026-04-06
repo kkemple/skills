@@ -1,0 +1,108 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "⚪️ Pull Request #123",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*<https://github.com/org/repo/pull/123|Add dark mode support>*\norg/repo"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://github.com/johndoe.png",
+					"alt_text": "johndoe"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Created by <https://github.com/johndoe|@johndoe> on January 20, 2024"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*From:*\n`feature/dark-mode`"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Into:*\n`main`"
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": ":bar_chart: 5 files changed with 150 additions and 30 deletions across 3 commits"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "This PR adds dark mode support with user preference detection and system theme sync. Key changes:\n\n• Added ThemeProvider component\n• Implemented user preference storage\n• Updated component styles"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": ":eyes: *2 reviewers requested*"
+				},
+				{
+					"type": "image",
+					"image_url": "https://github.com/reviewer1.png",
+					"alt_text": "reviewer1"
+				},
+				{
+					"type": "image",
+					"image_url": "https://github.com/reviewer2.png",
+					"alt_text": "reviewer2"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "View PR",
+						"emoji": true
+					},
+					"url": "https://github.com/org/repo/pull/123"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Review Changes",
+						"emoji": true
+					},
+					"style": "primary",
+					"url": "https://github.com/org/repo/pull/123/files"
+				}
+			]
+		}
+	]
+}

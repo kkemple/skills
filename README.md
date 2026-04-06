@@ -30,7 +30,7 @@ Orchestrator dispatches Validator + Optimizer (parallel)
 
 **Instances:**
 - `math-verify/` — verifies mathematical correctness of journal papers against 26 constraints
-- `block-kit-verify/` — validates Slack Block Kit JSON (in progress)
+- `blockkit-builder/` — builds Slack Block Kit JSON (in progress)
 
 **Tooling:**
 - `create-convergence-skill/` — generates new convergence skills from an interview process; bundles the canonical template at `assets/template/`

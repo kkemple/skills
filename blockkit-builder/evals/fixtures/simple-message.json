@@ -1,0 +1,68 @@
+{
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Deploy Status"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*api-gateway* has been deployed to production.\nVersion `2.4.1` is now live."
+      },
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "text": "View logs"
+        },
+        "action_id": "view_deploy_logs",
+        "url": "https://example.com/deploys/2.4.1"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Deployed by <@U0123456> at <!date^1712412600^{date_short} {time}|2026-04-06 14:30>"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Rollback"
+          },
+          "style": "danger",
+          "action_id": "rollback_deploy",
+          "confirm": {
+            "title": {
+              "type": "plain_text",
+              "text": "Confirm rollback"
+            },
+            "text": {
+              "type": "mrkdwn",
+              "text": "Are you sure you want to roll back to the previous version?"
+            },
+            "confirm": {
+              "type": "plain_text",
+              "text": "Rollback"
+            },
+            "deny": {
+              "type": "plain_text",
+              "text": "Cancel"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

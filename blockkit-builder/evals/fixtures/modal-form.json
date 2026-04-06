@@ -1,0 +1,108 @@
+{
+  "type": "modal",
+  "title": {
+    "type": "plain_text",
+    "text": "Bug Report"
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Submit"
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Please describe the bug you encountered."
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "title_input",
+      "label": {
+        "type": "plain_text",
+        "text": "Bug title"
+      },
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "bug_title",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Brief summary of the issue"
+        }
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "description_input",
+      "label": {
+        "type": "plain_text",
+        "text": "Description"
+      },
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "bug_description",
+        "multiline": true,
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Steps to reproduce, expected behavior, actual behavior"
+        }
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "severity_input",
+      "label": {
+        "type": "plain_text",
+        "text": "Severity"
+      },
+      "element": {
+        "type": "static_select",
+        "action_id": "bug_severity",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select severity level"
+        },
+        "options": [
+          {
+            "text": { "type": "plain_text", "text": "Critical" },
+            "value": "critical"
+          },
+          {
+            "text": { "type": "plain_text", "text": "High" },
+            "value": "high"
+          },
+          {
+            "text": { "type": "plain_text", "text": "Medium" },
+            "value": "medium"
+          },
+          {
+            "text": { "type": "plain_text", "text": "Low" },
+            "value": "low"
+          }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "assignee_input",
+      "label": {
+        "type": "plain_text",
+        "text": "Assign to"
+      },
+      "element": {
+        "type": "users_select",
+        "action_id": "bug_assignee",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select a team member"
+        }
+      },
+      "optional": true
+    }
+  ]
+}

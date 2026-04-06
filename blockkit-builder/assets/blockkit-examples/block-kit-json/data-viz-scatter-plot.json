@@ -1,0 +1,88 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "📊 Model Size vs Performance"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "🔬 *Evaluation:* Dec 2024 • 📈 *X-axis:* Parameters (B) • 📊 *Y-axis:* Accuracy (%)"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Scatter Plot Visualization:*\n```\n100% ┤                🟢   \n 95% ┤                   \n 90% ┤          🔵        \n 85% ┤     🟡             \n 80% ┤🟧                   \n 75% ┤                     \n     └─┬─────┬─────┬─────┬─\n      1B    5B   10B   20B\n```"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "🟧 *Spark-1B*\n1B params, 78% acc\nEfficient but limited"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "🟡 *Nexus-3B*\n3B params, 85% acc\nGood balance"
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "🔵 *Atlas-7B*\n7B params, 89% acc\nStrong performer"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "🟢 *Phoenix-15B*\n15B params, 97% acc\nTop tier model"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "📈 *Insights:*\n• Clear positive correlation between size and performance\n• Phoenix-15B shows best efficiency at scale\n• Nexus-3B offers good performance/cost ratio"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "📊 Add More Models"
+					},
+					"style": "primary",
+					"action_id": "add_models"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "⚙️ Adjust Scale"
+					},
+					"action_id": "adjust_scale"
+				}
+			]
+		}
+	]
+}

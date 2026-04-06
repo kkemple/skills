@@ -1,0 +1,118 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "📈 Training Progress Steps"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "🤖 *Model:* Phoenix-7B • ⏱️ *Duration:* 48h • 🎯 *Target Loss:* <0.5"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Training Loss Over Time:*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Step 0-1000:* Initial Phase\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 Loss: 2.8"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Step 1000-2000:* Rapid Descent\n🔴🔴🔴🔴🔴🔴🟠⬜⬜⬜ Loss: 1.9"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Step 2000-3000:* Stabilizing\n🔴🔴🔴🔴🟠🟠🟠⬜⬜⬜ Loss: 1.2"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Step 3000-4000:* Fine-tuning\n🟠🟠🟠🟡🟡🟡⬜⬜⬜⬜ Loss: 0.8"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Step 4000-5000:* Convergence\n🟡🟡🟢🟢🟢⬜⬜⬜⬜⬜ Loss: 0.4"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "🎯 *Training Status:*\n✅ Target loss achieved at step 4,200\n🚀 Convergence faster than expected\n⏱️ Total time: 42h (6h under estimate)"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*🔥 Peak GPU Usage*\n89% utilization\nOptimal efficiency"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*💾 Memory Usage*\n24.3GB peak\nWithin limits"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "📊 View Full Logs"
+					},
+					"style": "primary",
+					"action_id": "view_logs"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "💾 Save Checkpoint"
+					},
+					"action_id": "save_checkpoint"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "🚀 Deploy Model"
+					},
+					"action_id": "deploy_model"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,123 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*nextjs-another*"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "*Production Deployment*"
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "The deployment that is available to your visitors."
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*DEPLOYMENT*\nnextjs-another-jes2utxop-acme.vercel.app\n\n*DOMAINS*\nnextjs-another.vercel.app\n\n*STATUS* *CREATED*\n🟢 Ready        22d ago by timeyoutakeit\n\n*BRANCH*\n📦 main\nInitial commit Created from https://vercel.com/new"
+			},
+			"accessory": {
+				"type": "image",
+				"image_url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+				"alt_text": "Next.js 13 dashboard preview"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "To update your Production Deployment, push to the \"main\" branch."
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Git Repository"
+					},
+					"action_id": "git_repo"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Domains"
+					},
+					"action_id": "domains"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Visit"
+					},
+					"style": "primary",
+					"action_id": "visit"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Build Logs"
+					},
+					"action_id": "build_logs"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Runtime Logs"
+					},
+					"action_id": "runtime_logs"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "View OG"
+					},
+					"action_id": "view_og"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "🔄 Instant Rollback"
+					},
+					"action_id": "instant_rollback"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,105 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "🤖 Model Performance Evaluation"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "📅 *Eval Date:* Dec 15, 2024 • 🎯 *Benchmark:* 85% • 📊 *Dataset:* Internal-Test-v2.1"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Phoenix-7B* • 94.2% Accuracy\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟢 94%"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Atlas-13B* • 91.8% Accuracy\n🟦🟦🟦🟦🟦🟦🟦🟦🟦⬜ 92%"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Nexus-3B* • 88.5% Accuracy\n🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜ 89%"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Quantum-1B* • 82.1% Accuracy\n🟧🟧🟧🟧🟧🟧🟧🟧⬜⬜ 82%"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Spark-Base* • 76.3% Accuracy\n🟪🟪🟪🟪🟪🟪🟪⬜⬜⬜ 76%"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "⚡ *Performance Insights:*\n🏆 Phoenix-7B leads with 94.2% (+9.2% above benchmark)\n🚀 Atlas-13B shows strong consistency across domains\n⚠️ Spark-Base below benchmark - needs fine-tuning"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "📊 *Key Metrics:*\n• Avg Inference Time: 127ms\n• Memory Usage: 4.2GB peak\n• Throughput: 245 tokens/sec"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "📈 Detailed Metrics"
+					},
+					"style": "primary",
+					"action_id": "view_metrics"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "🔬 Run New Eval"
+					},
+					"action_id": "run_eval"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "📤 Export Results"
+					},
+					"action_id": "export_results"
+				}
+			]
+		}
+	]
+}
