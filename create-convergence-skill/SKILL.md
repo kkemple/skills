@@ -66,8 +66,9 @@ Read `references/architecture-overview.md` for context on the convergence archit
 6. Fill in `references/constraints.md` — hard-reject and scored constraints with IDs, confidence signals, and the hard exclusion note
 7. Fill in `references/domain.md` — field knowledge, quality signals, common patterns
 8. Fill in `references/context.md` — audience, venue/target, thresholds, pipeline position
-9. Seed `references/gotchas.md` with known pitfalls from the interview (or leave the template header if none yet)
-10. Do NOT modify the agent files (`agents/*.md`) — they are generic by design. The role and responsibilities are template-level; only the reference files change per domain.
+9. Fill in `references/log-format.md` — replace the `<!-- DOMAIN: -->` placeholder with the project's log directory, filename convention, and any domain-specific log fields. Logs are how the convergence loop improves across runs; the orchestrator writes them before the gotcha review.
+10. Seed `references/gotchas.md` with known pitfalls from the interview (or leave the template header if none yet)
+11. Do NOT modify the agent files (`agents/*.md`) — they are generic by design. The role and responsibilities are template-level; only the reference files change per domain.
 
 ### Step 4: Validate
 

@@ -98,7 +98,16 @@ Orchestrator dispatches Validator + Optimizer (parallel)
 
 ## Pre-flight
 
-Before entering the loop, the orchestrator determines the invocation mode:
+### Workspace setup
+
+Before pre-flight checks, the orchestrator scaffolds the workspace and tracks what it created so cleanup can tear down only what this run added:
+
+- [ ] Check if `.claude/` exists in the current working directory; if not, create it and record `created_claude_dir = true`
+- [ ] Check if `.claude/blockkit-builder-workspace/` exists; if not, create it and record `created_workspace_dir = true`
+- [ ] Check if `.claude/blockkit-builder-workspace/tmp/` exists; if not, create it and record `created_tmp_dir = true`
+- [ ] Hold the three creation flags in orchestrator state for the entire run
+
+The workspace is created in the current working directory of the project where the skill is invoked, never inside the skill repo.
 
 ### Mode A: Existing artifact
 
@@ -116,11 +125,31 @@ If pre-flight passes, proceed to the convergence loop.
 The user wants Block Kit JSON produced, not an existing file verified.
 
 - [ ] User provided a description, requirement, or input data
-- [ ] Target file path is specified or determinable
 - [ ] Generation mode determined: interactive (default — user wants help) or auto (input is clear, or invoked by another LLM)
-- [ ] Orchestrator dispatches Generator → artifact produced → post-generation pre-flight (same checks as Mode A)
+- [ ] Orchestrator dispatches Generator → artifact produced at `.claude/blockkit-builder-workspace/tmp/artifact.json` → post-generation pre-flight (same checks as Mode A)
 
 If pre-flight fails in either mode, stop and report what's missing. Do not enter the loop.
+
+## Output handoff
+
+After the convergence loop terminates successfully, before cleanup:
+
+1. The orchestrator reads the final artifact at `.claude/blockkit-builder-workspace/tmp/artifact.json`
+2. Prints the full JSON to chat in a fenced ```json code block so the user can copy it directly
+3. Asks the user whether to (a) copy from chat or (b) write to a file path the user specifies
+4. If the user chooses (b), writes the artifact to that path
+5. Once the user has the JSON in hand, proceeds to cleanup
+
+## Cleanup
+
+The very last action on successful completion. Tears down only what this run created, in reverse order using the tracked flags from workspace setup:
+
+1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (`artifact.json`, etc.). The permanent completion report in `.claude/blockkit-builder-workspace/logs/` is NOT deleted — it accumulates across runs.
+2. If `created_tmp_dir` is true, delete `.claude/blockkit-builder-workspace/tmp/`
+3. If `created_workspace_dir` is true, delete `.claude/blockkit-builder-workspace/`
+4. If `created_claude_dir` is true, delete `.claude/`
+
+**On failure** (residual surfaced, post-generation pre-flight failed, or any unrecoverable error): skip cleanup entirely. Tell the user the workspace lives at `.claude/blockkit-builder-workspace/tmp/` so they can inspect it.
 
 ## Findings Report Format
 
@@ -248,7 +277,7 @@ The SKILL.md stays under 500 lines. Domain-specific detail lives in reference fi
 |------|-------|
 | `agents/generator.md` | `references/generation-guide.md` + `references/examples.md` + `references/constraints/core.md` + (matching block/element constraints) + `references/domain.md` + `references/context.md` + `references/gotchas.md` |
 | `agents/validator.md` | `references/constraints/core.md` + (matching block/element constraints) + `references/gotchas.md` |
-| `agents/orchestrator.md` | `references/constraints/core.md` + (matching block/element constraints) + `references/domain.md` + `references/context.md` + `references/gotchas.md` |
+| `agents/orchestrator.md` | `references/constraints/core.md` + (matching block/element constraints) + `references/domain.md` + `references/context.md` + `references/gotchas.md` + `references/log-format.md` |
 | `agents/fixer.md` | `references/constraints/core.md` + (matching block/element constraints) + (fix report from orchestrator) + `references/gotchas.md` |
 | `agents/optimizer.md` | `references/examples.md` + `references/domain.md` + `references/context.md` + `references/gotchas.md` |
 
@@ -295,8 +324,22 @@ blockkit-builder/
 │   ├── gotchas.md                # Known pitfalls from real runs
 │   └── log-format.md             # Completion report logging spec
 ├── assets/
-│   └── blockkit-examples/        # Real-world Block Kit JSON examples (18 files)
+│   └── blockkit-examples/        # Real-world Block Kit JSON examples (19 files)
 └── evals/
     ├── evals.json                # Test case definitions
     └── fixtures/                 # Test artifact files
 ```
+
+**Runtime workspace** (created in the invoking project, NEVER inside the skill repo):
+
+```
+<invoking-project>/
+└── .claude/
+    └── blockkit-builder-workspace/
+        ├── tmp/
+        │   └── artifact.json         # The Block Kit JSON being built/validated (deleted on success)
+        └── logs/
+            └── <YYYY-MM-DD>-<HHMMSS>-<surface>.md  # Permanent completion report (survives cleanup)
+```
+
+The orchestrator scaffolds this workspace at the start of each run. On successful completion it tears down the `tmp/` artifacts but leaves `logs/` intact so completion reports accumulate across runs (see Pre-flight → Workspace setup, the Write log step, and the Cleanup section).

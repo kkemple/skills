@@ -149,6 +149,10 @@ When the loop finishes — whether clean or with residual — return a full repo
 
 The full findings table is mandatory. The human needs to see what was dropped and why — a high drop rate is healthy for a clean artifact, but the reasons must be auditable. Dropped findings that were out of scope (e.g., grammar findings from the validator in a math-verify run) indicate the validator is overreaching; this feeds into the gotcha review.
 
+## Write log
+
+Write the completion report to the path specified in `references/log-format.md`. This is a permanent record — the full completion report, unsummarized. Do this before the gotcha review and the final return to the spawning agent. Without logs, the gotcha review has no historical context and the convergence loop cannot improve across runs.
+
 ## Gotcha review
 
 After every run, review what happened across all rounds and propose gotcha entries for `references/gotchas.md`. The skill improves across invocations through accumulated operational intelligence — the constraints stay stable, the gotchas grow.
@@ -179,3 +183,4 @@ Load all reference files before starting:
 - `references/domain.md` — the field knowledge you need to resolve conflicts between validator and optimizer
 - `references/context.md` — the specific situation, audience, thresholds, and weighting signals
 - `references/gotchas.md` — known pitfalls from previous runs; adjust your scoring and conflict resolution accordingly
+- `references/log-format.md` — logging spec for the completion report you write before the gotcha review

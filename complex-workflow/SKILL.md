@@ -42,33 +42,33 @@ On Auditor deviation/error: the Orchestrator either course corrects the Executor
 After each completed step and each course correction, the Drift Monitor measures context pollution (CP) — the semantic distance between the approved plan (anchor) and the Orchestrator's current working state.
 
 - **< 0.10**: Aligned. Continue.
-- **0.10–0.25**: Mild drift. Log, continue.
-- **0.25–0.45**: Re-anchor. Orchestrator is wiped and respawned fresh from persisted state (plan.json, TaskList, Auditor report files, completion log for escalation history).
-- **> 0.45**: Orchestrator is compromised. Escalate to human.
+- **0.10–0.24**: Mild drift. Log, continue.
+- **0.25–0.44**: Re-anchor. Orchestrator is wiped and respawned fresh from persisted state in `.claude/complex-workflow-workspace/tmp/` (plan.json, TaskList, auditor report files, completion-log.md for escalation history).
+- **≥ 0.45**: Orchestrator is compromised. Escalate to human.
 
 ## Runtime workspace
 
-All temp files (plan handoff, Auditor reports) are written to a workspace directory:
+All temp files (plan handoff, Auditor reports, completion log) are written to a workspace directory in the invoking project's working directory, never inside the skill repo:
 
 ```
-complex-workflow-workspace/tmp/<task-slug>/
+.claude/complex-workflow-workspace/tmp/
 ```
 
-Where `<task-slug>` is derived from the task description: lowercase, spaces to dashes, drop special characters.
+**Scaffolding (run by the Orchestrator before any other work):**
 
-**Scaffolding rules:**
-1. Before writing any temp file, check if `complex-workflow-workspace/tmp/` exists.
-2. If it does not exist, create both `tmp/` and `<task-slug>/` inside it. Track that this run created `tmp/`.
-3. If `tmp/` already exists, only create `<task-slug>/` inside it. Track that this run did NOT create `tmp/`.
-4. Write all plan files and Auditor reports into `<task-slug>/`.
+1. Check if `.claude/` exists in the current working directory; if not, create it and record `created_claude_dir = true`. Otherwise `created_claude_dir = false`.
+2. Check if `.claude/complex-workflow-workspace/` exists; if not, create it and record `created_workspace_dir = true`. Otherwise `created_workspace_dir = false`.
+3. Check if `.claude/complex-workflow-workspace/tmp/` exists; if not, create it and record `created_tmp_dir = true`. Otherwise `created_tmp_dir = false`.
+4. Hold these three creation flags in Orchestrator state for the entire run. They drive cleanup.
 
-**Cleanup rules (after completion or on error):**
-1. Delete everything inside `<task-slug>/` — only files this run created.
-2. Delete the `<task-slug>/` directory itself.
-3. If this run created `tmp/`, delete `tmp/` as well (it should now be empty).
-4. If this run did NOT create `tmp/`, leave `tmp/` alone — other runs may be using it.
-5. NEVER delete `complex-workflow-workspace/` itself — it may contain other data (eval results, iteration directories, etc.).
-6. NEVER delete anything outside of `<task-slug>/`.
+**Cleanup on successful completion (reverse-order teardown using the tracked flags):**
+
+1. Delete every file inside `.claude/complex-workflow-workspace/tmp/` that this run created (plan.json, auditor reports, completion-log.md).
+2. If `created_tmp_dir` is true, delete `.claude/complex-workflow-workspace/tmp/`.
+3. If `created_workspace_dir` is true, delete `.claude/complex-workflow-workspace/`.
+4. If `created_claude_dir` is true, delete `.claude/`.
+
+**On failure** (escalation to human, unrecoverable error): skip cleanup entirely. Tell the user the workspace lives at `.claude/complex-workflow-workspace/tmp/` so they can inspect it.
 
 ## Templates
 
@@ -124,7 +124,7 @@ Where `<task-slug>` is derived from the task description: lowercase, spaces to d
 
 ## Completion Log
 
-The Orchestrator writes to `complex-workflow-workspace/logs/` progressively — updating after each completed step, not only at the end. This serves two purposes: permanent record of the run, and recovery state for re-anchor wipes.
+The Orchestrator writes to `.claude/complex-workflow-workspace/tmp/completion-log.md` progressively — updating after each completed step, not only at the end. This serves two purposes: permanent record of the run for the duration of the run, and recovery state for re-anchor wipes. The log is removed by the cleanup step at the end of a successful run; on failure it stays for debugging.
 
 The log includes:
 

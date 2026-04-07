@@ -120,7 +120,7 @@ Use this exact format:
 - `recommendation` — `"course_correct"` or `"escalate_to_human"`
 - `recommendation_rationale` — why this recommendation
 
-Save reports to: `complex-workflow-workspace/tmp/<task-slug>/auditor-<step_id>-<pre|post>.json`
+Save reports to: `.claude/complex-workflow-workspace/tmp/auditor-<step_id>-<pre|post>.json`
 
 ## Confidence scoring
 

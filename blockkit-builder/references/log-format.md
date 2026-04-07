@@ -3,14 +3,10 @@
 ## Where logs go
 
 ```
-logs/YYYY-MM-DD/NNN-blockkit-builder--<artifact-slug>.md
+.claude/blockkit-builder-workspace/logs/<YYYY-MM-DD>-<HHMMSS>-<surface>.md
 ```
 
-- `YYYY-MM-DD` — date of the run
-- `NNN` — 3-digit sequence number within the day (001, 002, ...)
-- `<artifact-slug>` — lowercase, hyphenated name derived from the artifact filename (e.g., `approval-modal`, `deploy-notification`)
-
-Create the directory if it doesn't exist. Increment the sequence number based on existing files in the day's directory.
+The workspace directory is scaffolded by the orchestrator at the start of the run. The `logs/` subdirectory is created on first write if it does not yet exist. Logs are permanent — they survive cleanup and accumulate across runs so future invocations (and the gotcha review) have a record of what happened. Use the surface (`message`, `home`, `modal`) in the filename so logs are easy to scan by surface.
 
 ## What gets logged
 
@@ -27,4 +23,4 @@ The full orchestrator completion report with no summarization or omission:
 
 ## When it's written
 
-The orchestrator writes the log as its final action before returning the completion report to the spawning agent. The log is written regardless of outcome — clean runs, runs with residual, and runs that failed post-generation pre-flight all get logged.
+The orchestrator writes the log immediately before the Output handoff step. The log is permanent on both successful and failed runs — it is never removed by Cleanup. On failure the rest of the workspace is also left in place for debugging.

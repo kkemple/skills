@@ -181,3 +181,4 @@ Load all reference files before starting:
 - `references/domain.md` — the field knowledge you need to resolve conflicts between validator and optimizer
 - `references/context.md` — the specific situation, audience, thresholds, and weighting signals
 - `references/gotchas.md` — known pitfalls from previous runs; adjust your scoring and conflict resolution accordingly
+- `references/log-format.md` — logging spec for the completion report you write at the "Write log" step before the gotcha review

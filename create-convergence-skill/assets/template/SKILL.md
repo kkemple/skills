@@ -234,10 +234,10 @@ The SKILL.md stays under 500 lines. Domain-specific detail lives in reference fi
 
 | File | Loads |
 |------|-------|
-| `agents/validator.md` | `references/constraints.md` |
-| `agents/orchestrator.md` | `references/constraints.md` + `references/domain.md` + `references/context.md` |
-| `agents/fixer.md` | `references/constraints.md` + (fix report from orchestrator) |
-| `agents/optimizer.md` | `references/domain.md` + `references/context.md` |
+| `agents/validator.md` | `references/constraints.md` + `references/gotchas.md` |
+| `agents/orchestrator.md` | `references/constraints.md` + `references/domain.md` + `references/context.md` + `references/gotchas.md` + `references/log-format.md` |
+| `agents/fixer.md` | `references/constraints.md` + (fix report from orchestrator) + `references/gotchas.md` |
+| `agents/optimizer.md` | `references/domain.md` + `references/context.md` + `references/gotchas.md` |
 
 ### Reference files (slotted per instantiation)
 
@@ -246,6 +246,7 @@ The SKILL.md stays under 500 lines. Domain-specific detail lives in reference fi
 | `references/constraints.md` | The rules that define valid. Hard-reject and scored constraints. | Validator, Orchestrator, Fixer |
 | `references/domain.md` | The field. Quality signals, norms, conventions. | Optimizer, Orchestrator |
 | `references/context.md` | The specific situation. Audience, venue, thresholds. | Optimizer, Orchestrator |
+| `references/log-format.md` | Completion report logging spec. Directory structure, naming, content. | Orchestrator |
 | `references/gotchas.md` | Mistakes agents will make without being told. Populated after real runs. | All agents |
 
 ### Other

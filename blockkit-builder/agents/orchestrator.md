@@ -39,6 +39,15 @@ Mark each task in_progress when starting it and completed when done. If the fix 
 
 ## Process
 
+### 0. Workspace setup
+
+Before pre-flight, scaffold the workspace and track what was created so cleanup can tear down only what this run added.
+
+1. Check if `.claude/` exists in the current working directory. If not, create it and record `created_claude_dir = true`. Otherwise `created_claude_dir = false`.
+2. Check if `.claude/blockkit-builder-workspace/` exists. If not, create it and record `created_workspace_dir = true`. Otherwise `created_workspace_dir = false`.
+3. Check if `.claude/blockkit-builder-workspace/tmp/` exists. If not, create it and record `created_tmp_dir = true`. Otherwise `created_tmp_dir = false`.
+4. Hold these three creation flags in orchestrator state for the entire run. They drive cleanup.
+
 ### 1. Pre-flight
 
 Determine the invocation mode:
@@ -51,7 +60,7 @@ Determine the invocation mode:
 - Determine the generation mode:
   - **Interactive** (default) — the user wants help figuring out what to build. The Generator will interview them, propose a UI plan, iterate until confirmed, then produce JSON.
   - **Auto** — the input is already clear (API response, specification, explicit description, or invoked by another LLM). The Generator produces JSON directly without interviewing.
-- Determine or default a target file path for the artifact.
+- The artifact will be written to `.claude/blockkit-builder-workspace/tmp/artifact.json`.
 - Proceed to step 1b (Generate).
 
 If pre-flight fails in either mode, stop and report what's missing. Do not enter the loop.
@@ -63,7 +72,7 @@ If the user wants Block Kit JSON produced (Mode B):
 1. Dispatch the Generator agent with:
    - The mode: interactive or auto
    - The user's description, requirement, or input data
-   - The target file path for the artifact
+   - The artifact write path: `.claude/blockkit-builder-workspace/tmp/artifact.json`
    - The target surface (if specified by the user; otherwise let the Generator infer)
 
 2. Wait for the Generator's summary response. In interactive mode, the Generator will interview the user, propose a UI plan, iterate until confirmed, then produce the JSON. In auto mode, the Generator produces JSON directly.
@@ -120,6 +129,31 @@ A final report with "held" findings is **invalid**. It presents issues with no r
 
 Return to step 2: dispatch validator and optimizer again in parallel for a fresh round against the modified artifact.
 
+### 5b. Write log
+
+After the convergence loop terminates (clean, bound hit with residual resolved, or unrecoverable failure), and before the Output handoff, write the completion report to `.claude/blockkit-builder-workspace/logs/` following the instructions in `references/log-format.md`. This is a permanent record — the full completion report, unsummarized. The log survives Cleanup and accumulates across runs so the gotcha review has historical context.
+
+### 6. Output handoff
+
+After the convergence loop terminates successfully (clean or bound hit with residual resolved), before cleanup:
+
+1. Read the final artifact at `.claude/blockkit-builder-workspace/tmp/artifact.json`.
+2. Print the full JSON to chat in a fenced ```json code block so the user can copy it directly.
+3. Ask the user: "Do you want to (a) copy the JSON from chat above, or (b) write it to a file path?"
+4. If the user chooses (b), get the file path from them and write the artifact to that path.
+5. Once the user has the JSON in hand (either way), proceed to cleanup.
+
+### 7. Cleanup
+
+The very last action on successful completion. Tear down only what this run created, in reverse order:
+
+1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (including `artifact.json`). The completion report in `.claude/blockkit-builder-workspace/logs/` is permanent and is NOT deleted.
+2. If `created_tmp_dir` is true, delete `.claude/blockkit-builder-workspace/tmp/`.
+3. If `created_workspace_dir` is true, delete `.claude/blockkit-builder-workspace/`.
+4. If `created_claude_dir` is true, delete `.claude/`.
+
+**On failure** (residual surfaced to human, post-generation pre-flight failed, or any unrecoverable error): skip cleanup entirely. Tell the user the workspace path so they can inspect it: `.claude/blockkit-builder-workspace/tmp/`.
+
 ## State tracking
 
 You are the only agent that holds state. Maintain across rounds:
@@ -128,6 +162,11 @@ You are the only agent that holds state. Maintain across rounds:
 {
   "iteration": 2,
   "max_iterations": 3,
+  "workspace": {
+    "created_claude_dir": true,
+    "created_workspace_dir": true,
+    "created_tmp_dir": true
+  },
   "history": [
     {
       "round": 1,
@@ -167,7 +206,7 @@ When the loop finishes — whether clean or with residual — return a full repo
 | 1 | F001 | validator | [description] | approved → fixed | 0.92 | 0.88 | — |
 | 1 | F002 | validator | [description] | dropped | 0.45 | — | issue confidence below 0.60 |
 | 1 | F003 | optimizer | [description] | dropped | 0.72 | 0.80 | out of scope (grammar) |
-| 1 | F004 | optimizer | [description] | held | 0.68 | 0.75 | below approve threshold |
+| 1 | F004 | optimizer | [description] | held → dropped | 0.68 | 0.75 | below approve threshold, not recurring at termination |
 | 2 | F005 | validator | [description] | dropped | 0.55 | — | below threshold, not recurring |
 [... every finding, no exceptions]
 
@@ -222,6 +261,7 @@ Load all reference files before starting:
 - `references/domain.md` — the field knowledge you need to resolve conflicts between validator and optimizer
 - `references/context.md` — the specific situation, audience, thresholds, and weighting signals
 - `references/gotchas.md` — known pitfalls from previous runs; adjust your scoring and conflict resolution accordingly
+- `references/log-format.md` — logging spec for the completion report you write before the Output handoff
 
 When generating from a description, also dispatch:
 - `agents/generator.md` — the Generator agent, dispatched before the loop to produce the initial artifact

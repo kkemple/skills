@@ -17,7 +17,6 @@ The Orchestrator owns the task list, dispatches all other agents, holds all repo
 - All task state and execution history
 - Course correction history
 - Drift Monitor scores
-- Everything — the plan, all Auditor reports, all task state, all execution history, Drift Monitor scores
 
 ## Scoped visibility of other agents
 
@@ -43,11 +42,14 @@ Each subagent is independent — it shares no context with other subagents excep
 
 ### 1. Set up the workspace
 
-Before spawning any agent, set up the workspace directory. Follow the scaffolding rules in SKILL.md:
-1. Check if `complex-workflow-workspace/tmp/` exists.
-2. If it does not exist, create both `tmp/` and `<task-slug>/` inside it. Track that this run created `tmp/`.
-3. If `tmp/` already exists, only create `<task-slug>/` inside it. Track that this run did NOT create `tmp/`.
-4. Write all plan files and Auditor reports into `<task-slug>/`.
+Before spawning any agent, scaffold the workspace and track what was created so cleanup can tear down only what this run added. Follow the scaffolding rules in SKILL.md:
+
+1. Check if `.claude/` exists in the current working directory. If not, create it and record `created_claude_dir = true`. Otherwise `created_claude_dir = false`.
+2. Check if `.claude/complex-workflow-workspace/` exists. If not, create it and record `created_workspace_dir = true`. Otherwise `created_workspace_dir = false`.
+3. Check if `.claude/complex-workflow-workspace/tmp/` exists. If not, create it and record `created_tmp_dir = true`. Otherwise `created_tmp_dir = false`.
+4. Hold these three creation flags in your state for the entire run. They drive cleanup.
+
+All plan files, Auditor reports, and the completion log live in `.claude/complex-workflow-workspace/tmp/`.
 
 ### 2. Launch the Planner (Phase 1)
 
@@ -56,7 +58,7 @@ Your first agent dispatch. The Planner is the only agent that talks to the user 
 Spawn the Planner as a subagent with:
 - The full contents of `agents/planner.md`
 - The user's task description
-- The workspace path: `complex-workflow-workspace/tmp/<task-slug>/plan.json`
+- The workspace path: `.claude/complex-workflow-workspace/tmp/plan.json`
 
 The Planner does iterative loops with the user to lock in an extremely step-by-step detailed plan. Each step includes the exact tool calls, commands, file paths, and reasoning for the action. Not summaries — exact details. Each step also includes acceptance criteria (how to verify the step was done correctly) and a validation protocol (what the Auditor will check after execution).
 
@@ -68,7 +70,7 @@ The Planner is wiped after handoff. It is not used again unless the entire proce
 
 The user does not interact with any agent during this phase — it is purely your internal setup.
 
-1. Read the Planner's structured plan from `complex-workflow-workspace/tmp/<task-slug>/plan.json`.
+1. Read the Planner's structured plan from `.claude/complex-workflow-workspace/tmp/plan.json`.
 2. For each step in the plan, create a task using TaskCreate. The subject of each task is the exact description from the plan — not a summary, not shortened, the exact text.
 3. Launch the Executor and provide it with the plan.
 
@@ -87,14 +89,14 @@ For each task in order:
 4. If the Auditor finds inconsistencies (status "deviation"): pass the specific inconsistencies from the Auditor's report back to the Executor. The Executor revises its execution plan and returns the new version to you. Pass it to the Auditor again. Loop until the Auditor approves with status "approved".
 5. Once the Auditor approves: tell the Executor to execute. The Executor executes exactly what was approved — nothing more, nothing less — and returns its execution report to you.
 6. Pass the Executor's execution report to the Auditor for post-execution audit. The Auditor uses the acceptance_criteria array and validation_protocol string from the plan step to validate that the step was done correctly. The Auditor returns its report to you.
-7. If the Auditor approves: call TaskUpdate to set the task to `completed`. Update the completion log with the step results and any escalation decisions made during this step.
-8. Dispatch the Drift Monitor with: the approved plan (anchor) and a summary of your current accumulated state. The Drift Monitor returns a context pollution (CP) score. Log the score.
-9. Act on the CP score:
-   - **< 0.10**: Aligned. Continue to next step.
-   - **0.10–0.25**: Mild drift. Log the score, continue to next step.
-   - **0.25–0.45**: Re-anchor required. See the re-anchor procedure below.
-   - **> 0.45**: You are compromised. Escalate to human — the human decides whether to continue, re-anchor, or replan.
-10. If the Auditor finds issues (step 8): decide — **course correct the Executor** (if the issue is clear and fixable) or **surface to the human for intervention** (if the issue requires judgment). After a course correction resolves, run the Drift Monitor before the next step.
+7. If the Auditor approves the post-execution audit: call TaskUpdate to set the task to `completed`. Update the completion log with the step results and any escalation decisions made during this step.
+8. If the Auditor finds issues in the post-execution audit (step 6): decide — **course correct the Executor** (if the issue is clear and fixable) or **surface to the human for intervention** (if the issue requires judgment). For course correction, follow the cascading reset and re-execution protocol in Phase 4 (Error recovery). When Phase 4 returns control, resume at step 1 for the first reset task.
+9. Dispatch the Drift Monitor with: the approved plan (anchor) and a summary of your current accumulated state. The Drift Monitor returns a context pollution (CP) score. Log the score.
+10. Act on the CP score:
+    - **< 0.10**: Aligned. Continue to next step.
+    - **0.10–0.24**: Mild drift. Log the score, continue to next step.
+    - **0.25–0.44**: Re-anchor required. See the re-anchor procedure below.
+    - **≥ 0.45**: You are compromised. Escalate to human — the human decides whether to continue, re-anchor, or replan.
 
 Key behaviors:
 - You broker all communication between agents — no agent talks directly to another
@@ -139,10 +141,10 @@ The Orchestrator's accumulated context has drifted from the approved plan. The f
 1. Ensure the completion log is up to date — all step results and escalation decisions written.
 2. The Orchestrator is wiped.
 3. A fresh Orchestrator spawns and reads:
-   - `plan.json` — the anchor (the approved plan)
+   - `.claude/complex-workflow-workspace/tmp/plan.json` — the anchor (the approved plan)
    - TaskList — current step statuses (which steps are completed, pending, failed)
-   - Auditor report files in `<task-slug>/` — what happened at each step
-   - The completion log in `complex-workflow-workspace/logs/` — escalation history (human policy decisions that must carry forward)
+   - Auditor report files in `.claude/complex-workflow-workspace/tmp/` — what happened at each step
+   - The completion log at `.claude/complex-workflow-workspace/tmp/completion-log.md` — escalation history (human policy decisions that must carry forward)
 4. The fresh Orchestrator resumes execution from the next pending step, following the same Phase 3 loop.
 
 The fresh Orchestrator carries zero conversational context from the previous Orchestrator. It has the plan, the outcomes, and the human's decisions. That is all it needs.
@@ -151,7 +153,12 @@ The fresh Orchestrator carries zero conversational context from the previous Orc
 
 - Task is completed when the last step of the plan is executed successfully and the Auditor validates it.
 - The completion log has been written progressively throughout the run. Finalize it with the final outcome and report to the user.
-- Clean up the workspace following the cleanup rules in SKILL.md.
+- Then run cleanup (reverse-order teardown using the tracked creation flags):
+  1. Delete every file inside `.claude/complex-workflow-workspace/tmp/` that this run created (`plan.json`, all `auditor-*.json` files, `completion-log.md`).
+  2. If `created_tmp_dir` is true, delete `.claude/complex-workflow-workspace/tmp/`.
+  3. If `created_workspace_dir` is true, delete `.claude/complex-workflow-workspace/`.
+  4. If `created_claude_dir` is true, delete `.claude/`.
+- **On failure** (escalation to human, unrecoverable error): skip cleanup entirely. Tell the user the workspace lives at `.claude/complex-workflow-workspace/tmp/` so they can inspect it.
 
 Key behaviors:
 - Root cause analysis uses the Auditor's structured reports — not the Executor's self-assessment
@@ -168,6 +175,11 @@ You are the only agent that holds state across steps. Only you hold history. Aft
 {
   "current_step": "S003",
   "total_steps": 5,
+  "workspace": {
+    "created_claude_dir": true,
+    "created_workspace_dir": true,
+    "created_tmp_dir": true
+  },
   "history": [
     {
       "step_id": "S001",
@@ -193,7 +205,7 @@ You use both scores to decide: course correct or escalate.
 
 ## Completion report format
 
-When the loop finishes, produce this report and write it to `complex-workflow-workspace/logs/`:
+When the loop finishes, produce this report and write it to `.claude/complex-workflow-workspace/tmp/completion-log.md`:
 
 ```markdown
 ## Complete — [N] steps executed

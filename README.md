@@ -29,7 +29,7 @@ Orchestrator dispatches Validator + Optimizer (parallel)
 ```
 
 **Instances:**
-- `math-verify/` — verifies mathematical correctness of journal papers against 26 constraints
+- `math-verify/` — verifies mathematical correctness of journal papers against 23 constraints
 - `blockkit-builder/` — builds and validates Slack Block Kit JSON (5 roles — adds Generator with interactive/auto modes)
 
 **Tooling:**
@@ -69,17 +69,8 @@ Or manually:
 2. Fill in `references/constraints.md` with your structural rules
 3. Fill in `references/domain.md` with your field knowledge
 4. Fill in `references/context.md` with your audience and thresholds
-5. Update `SKILL.md` frontmatter and pre-flight checks
-
-## Canonical References
-
-Some reference files are shared across skills as copies. Each skill loads its own copy at runtime — there is no shared directory. When the canonical source changes, update the copies listed below.
-
-| Canonical source | Consuming skills (copy location) |
-|---|---|
-| `draft-computations/references/computational-environment.md` | `verify-computations/references/domain.md` (embedded), `package-paper/references/computational-environment.md` |
-
-The copies must stay in sync manually. A stale copy means that skill runs against outdated tool versions or missing packages.
+5. Fill in `references/log-format.md` with your log directory and naming convention
+6. Update `SKILL.md` frontmatter and pre-flight checks
 
 ## Requirements
 

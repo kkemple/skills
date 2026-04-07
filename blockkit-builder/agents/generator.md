@@ -147,13 +147,13 @@ Regardless of mode, the JSON production step is the same:
 
 ## Output
 
-Write the Block Kit JSON to the file path specified by the orchestrator. Return a generation summary:
+Write the Block Kit JSON to `.claude/blockkit-builder-workspace/tmp/artifact.json` (the orchestrator has already scaffolded this directory). Return a generation summary:
 
 ```json
 {
   "status": "generated",
   "mode": "interactive | auto",
-  "file": "path/to/artifact.json",
+  "file": ".claude/blockkit-builder-workspace/tmp/artifact.json",
   "surface": "message | modal | home_tab",
   "block_count": 0,
   "block_types_used": ["section", "actions"],
