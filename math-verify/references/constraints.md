@@ -83,7 +83,7 @@ Both sides of every equation must have the same physical dimensions. Transport c
 **Confidence signals:** Dimensional mismatch = high. Dimensionless equation with absorbed units = low.
 
 ### C24: Standard notation for domain
-Symbols should match target journal expectations ($\eta$ for shear viscosity, $\Delta$ for Laplacian, $\lambda_n$ for eigenvalues). Nonstandard choices flagged.
+Symbols should match the standard notation conventions of the work's field ($\eta$ for shear viscosity, $\Delta$ for Laplacian, $\lambda_n$ for eigenvalues). Nonstandard choices flagged.
 **Confidence signals:** Conflict with universal convention = high. Acceptable subcommunity variant = low.
 
 ### C25: Operator formatting

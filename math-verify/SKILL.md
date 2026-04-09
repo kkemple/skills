@@ -1,6 +1,6 @@
 ---
 name: math-verify
-description: "Verify mathematical correctness of a drafted journal paper using orchestrated multi-role adherence-coherence convergence. Use this skill when the user wants to check proofs, validate logical steps, verify invoked results, audit notation consistency, or confirm that theorem hypotheses are necessary and sufficient. Trigger on phrases like 'verify the math', 'check the proofs', 'is this correct', 'audit the paper', 'mathematical review', or when a paper draft has just been completed and needs validation before copy editing."
+description: "Verify mathematical correctness of a drafted mathematical paper using orchestrated multi-role adherence-coherence convergence. Use this skill when the user wants to check proofs, validate logical steps, verify invoked results, audit notation consistency, or confirm that theorem hypotheses are necessary and sufficient. Trigger on phrases like 'verify the math', 'check the proofs', 'is this correct', 'audit the paper', 'mathematical review', or when a paper draft has just been completed and needs validation before copy editing."
 ---
 
 # Mathematical Verification
@@ -34,7 +34,7 @@ Each role has fixed responsibilities defined by the template. Domain-specific co
 | Term | Definition |
 |------|-----------|
 | **Domain** | The field the skill operates in. Determines what the validator's competencies are, what the optimizer evaluates for, and what the fixer needs to know. |
-| **Context** | The specific situation — the journal, codebase, project, audience. Determines thresholds, confidence weighting, what counts as common knowledge. |
+| **Context** | The specific situation — the codebase, project, audience. Determines thresholds, confidence weighting, what counts as common knowledge. |
 | **Constraints** | The rules that define valid. Defined by domain and context together. Classified as hard-reject (binary) or scored (confidence-weighted). The validator measures against these. The orchestrator enforces these. |
 
 ## Rules
@@ -213,7 +213,7 @@ Thresholds:
 Weighting for mathematical verification:
 - Mechanical checks (C06 index balance, C23 dimensional consistency, C25 operator formatting): issue confidence 0.9+ — deterministic
 - Proof logic (C01, C02, C04): issue confidence from independent re-derivation — high if the step genuinely fails, lower if ambiguous
-- Convention checks (C24, C26): weight by how universal the convention is for the target journal
+- Convention checks (C24, C26): weight by how universal the convention is for the target audience
 - Framework-level (C20-C22): medium weight — real concerns but involve more judgment
 
 ## Progressive Disclosure

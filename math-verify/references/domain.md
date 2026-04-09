@@ -1,4 +1,4 @@
-# Domain — Mathematical Verification of Journal Papers
+# Domain — Mathematical Verification
 
 Loaded by: Optimizer, Orchestrator
 
@@ -48,4 +48,3 @@ Mathematical verification does not assess:
 - Prose quality, grammar, voice, tone (that's copy-edit)
 - Citation completeness, bibliography correctness (that's citation-sweep)
 - Whether the paper should exist or whether results are interesting
-- Journal formatting compliance
