@@ -1,0 +1,26 @@
+
+- create-convergence-skill/SKILL.md
+- create-convergence-skill/assets/template/SKILL.md
+- create-convergence-skill/assets/template/agents/orchestrator.md
+- create-convergence-skill/assets/template/agents/validator.md
+- create-convergence-skill/assets/template/agents/optimizer.md
+- create-convergence-skill/assets/template/agents/fixer.md
+- scan-convergence-opportunities/SKILL.md
+- complex-workflow/SKILL.md
+- complex-workflow/agents/orchestrator.md
+- complex-workflow/agents/planner.md
+- complex-workflow/agents/auditor.md
+- complex-workflow/agents/executor.md
+- complex-workflow/agents/drift-monitor.md
+- math-verify/SKILL.md
+- math-verify/agents/orchestrator.md
+- math-verify/agents/validator.md
+- math-verify/agents/optimizer.md
+- math-verify/agents/fixer.md
+- blockkit-builder/SKILL.md
+- blockkit-builder/agents/orchestrator.md
+- blockkit-builder/agents/generator.md
+- blockkit-builder/agents/validator.md
+- blockkit-builder/agents/optimizer.md
+- blockkit-builder/agents/fixer.md
+- claude-tutor/SKILL.md

@@ -48,7 +48,7 @@ For each candidate, identify what's already automated:
 - **CI checks** — enforce some constraints but usually miss quality
 - **Manual review processes** — cover fitness but are inconsistent and don't scale
 
-The gap between what's enforced and what matters is where a convergence skill adds value. If existing tooling already covers both dimensions well, don't recommend a convergence skill — acknowledge what's working.
+The gap between what's enforced and what matters is where a convergence skill adds value. If existing tooling already covers both dimensions well, report the artifact as already covered and describe which tools handle which dimension.
 
 ### Step 5: Produce the report
 
@@ -75,13 +75,13 @@ For each convergence opportunity:
 **Recommended skill name:** [ready for create-convergence-skill]
 ```
 
-Be conservative. Only report opportunities where the convergence architecture genuinely adds value over what exists. A short report with three strong candidates is better than a long report with ten weak ones.
+Be conservative. Only report opportunities where the convergence architecture genuinely adds value over what exists.
 
 ### Step 6: Teach the pattern
 
 After the report, briefly explain the structural signature so the user can recognize it themselves: "These opportunities share a common shape — an artifact with both mechanical rules and a quality dimension for a specific audience. If you notice this pattern in other parts of your project or in future work, that's also a convergence candidate."
 
-The goal is the user needing this scanner less over time, not more.
+The goal is to transfer the pattern so the user can recognize convergence candidates themselves in future work.
 
 ### Step 7: Grow the catalog
 

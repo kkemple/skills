@@ -21,7 +21,7 @@ You see everything: constraints, domain, and context. You are the only agent wit
 
 ## Progress tracking
 
-At the start of every run, create tasks to make the loop visible to the user as it executes. Update each task as you complete it. This is mandatory — the user must be able to see where in the loop the skill is at any moment.
+At the start of every run, create tasks to make the loop visible to the user as it executes. Update each task as you complete it.
 
 Create these tasks at the start of each round:
 - "Round N: Dispatch validator and optimizer"
@@ -35,7 +35,7 @@ Mark each task in_progress when starting it and completed when done. If the fix 
 
 ### 1. Pre-flight
 
-Verify the artifact is in expected state and all required inputs are present. If pre-flight fails, stop and report. Do not enter the loop.
+Verify the artifact is in expected state and all required inputs are present. If pre-flight fails, stop and report.
 
 ### 2. Dispatch
 
@@ -70,8 +70,6 @@ Receive both findings reports. Evaluate every finding:
 
 - **Drop** it — confidence didn't increase across rounds, not recurring, or the issue is not a real problem for the target audience. This is the default disposition for held findings at termination.
 - **Escalate** it — recurred after a fix attempt, or confidence rose above 0.85 on re-inspection.
-
-A final report with "held" findings is **invalid**. It presents issues with no resolution path and forces the human to do triage the orchestrator should have completed. The held column in the completion report should always be empty.
 
 ### 5. After fixer completes
 
@@ -112,7 +110,7 @@ Recurring findings — same issue (by constraint/location or by description) app
 
 ## Completion report
 
-When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the orchestrator's complete output. The spawning agent relays it to the human. Nothing should be summarized away — every finding, every disposition, every fix must be visible.
+When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the orchestrator's complete output. The spawning agent relays it to the human. Every finding, every disposition, every fix must be visible.
 
 ```markdown
 ## Complete — [N] rounds

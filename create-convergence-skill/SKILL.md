@@ -68,7 +68,7 @@ Read `references/architecture-overview.md` for context on the convergence archit
 8. Fill in `references/context.md` — audience, venue/target, thresholds, pipeline position
 9. Fill in `references/log-format.md` — replace the `<!-- DOMAIN: -->` placeholder with the project's log directory, filename convention, and any domain-specific log fields. Logs are how the convergence loop improves across runs; the orchestrator writes them before the gotcha review.
 10. Seed `references/gotchas.md` with known pitfalls from the interview (or leave the template header if none yet)
-11. Do NOT modify the agent files (`agents/*.md`) — they are generic by design. The role and responsibilities are template-level; only the reference files change per domain.
+11. Agent files (`agents/*.md`) are template-level and stay as-is. Domain-specific behavior is expressed entirely through the reference files — constraints.md, domain.md, context.md, log-format.md, gotchas.md.
 
 ### Step 4: Validate
 
@@ -96,7 +96,7 @@ If the user has a sample artifact, offer to run the new skill against it as vali
 - Constraint IDs must be consistent between constraints.md and any references in the confidence rubric — C06 in one must mean C06 in the other
 - The hard exclusion note at the bottom of constraints.md is critical — without it, the validator will overreach into domains that belong to other skills (e.g., flagging grammar in a math-verify skill)
 - Agent files should NOT be modified during instantiation — they define roles and responsibilities that are universal across all convergence skills. Domain-specific competencies come from the reference files.
-- Cover letters or markdown files with Unicode math characters will break pandoc PDF generation — always use LaTeX inline math in any file that might be converted to PDF
+- For any file that might be converted to PDF by pandoc, write math as LaTeX inline (e.g., `$x^2$`)
 
 ## Progressive disclosure
 

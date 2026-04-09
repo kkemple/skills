@@ -1,6 +1,6 @@
 ---
 name: _template-orchestrated-multi-role-adherence-coherence-convergence
-description: "Template for orchestrated multi-role adherence-coherence convergence. Do not invoke directly — copy and customize for a specific domain. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (adherence) and optimizer (coherence) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
+description: "Template for orchestrated multi-role adherence-coherence convergence. Copy and customize for a specific domain before use. This template implements a self-correcting architecture where an orchestrator orchestrates parallel validator (adherence) and optimizer (coherence) passes, merges their reports, and dispatches a fixer until the artifact converges or residual surfaces to the human."
 ---
 
 # Orchestrated Multi-role Adherence-Coherence Convergence — Skill Template
@@ -40,8 +40,8 @@ Each role has fixed responsibilities defined by the template. Domain-specific co
 | Role | Responsibility | Sees |
 |------|---------------|------|
 | **Orchestrator** | Orchestrates the entire process. Dispatches validator and optimizer. Receives their reports. Merges findings into a single fix report. Dispatches fixer. Holds state across rounds. Decides when the loop is done or when to surface residual. Starts and ends the skill. | Constraints + Domain + Context |
-| **Validator** | Surfaces, catalogs, and assesses confidence of potential or confirmed constraint violations. Compares the artifact against constraints. Cannot judge whether findings should be actioned — only report. Runs on every round in parallel with optimizer. | Constraints only. Ignores domain and context. |
-| **Optimizer** | Assesses the overall coherence, fitness, and quality of the artifact within its domain and context. Produces findings with fix suggestions. Runs on every round in parallel with validator, including when validator finds nothing — guaranteeing at least one complete loop. | Domain + Context only. Ignores constraints. |
+| **Validator** | Surfaces, catalogs, and assesses confidence of potential or confirmed constraint violations. Reports all findings to the orchestrator for action decisions. Runs on every round in parallel with optimizer. | Constraints only. |
+| **Optimizer** | Assesses the overall coherence, fitness, and quality of the artifact within its domain and context. Produces findings with fix suggestions. Runs on every round in parallel with validator, including when validator finds nothing — guaranteeing at least one complete loop. | Domain + Context only. |
 | **Fixer** | Surgically applies fixes from the orchestrator's fix report. Uses minimal context: the fix report and the constraints. Makes the smallest change that resolves each finding. The only agent that touches the artifact. | Fix report + Constraints only. |
 
 ### Slotted per instantiation
@@ -60,11 +60,11 @@ These are the structural rules of the system. They govern how roles, constraints
 
 2. The orchestrator owns the process. It starts the skill, dispatches agents, receives all reports, produces fix reports, holds state, and is the only agent that can end the skill or surface residual to the human. **Why:** A single orchestrator prevents race conditions, ensures consistent state, and gives the human one point of contact for the entire skill.
 
-3. The validator's only responsibility is to surface, catalog, and assess confidence of potential or confirmed violations of constraints. It compares the artifact against constraints but cannot judge whether findings should be actioned — only report them. It sees constraints only. It does not see domain or context. **Why:** Separating detection from judgment prevents the validator from self-censoring findings based on domain conventions. A constraint violation is a constraint violation regardless of whether the domain considers it acceptable — the orchestrator resolves that tension with full context.
+3. The validator's only responsibility is to surface, catalog, and assess confidence of potential or confirmed violations of constraints. It reports all findings to the orchestrator for action decisions. It sees constraints only. **Why:** Separating detection from judgment prevents the validator from self-censoring findings based on domain conventions. A constraint violation is a constraint violation regardless of whether the domain considers it acceptable — the orchestrator resolves that tension with full context.
 
-4. The optimizer's only responsibility is to assess the overall coherence, fitness, and quality of the artifact within its domain and context. It produces a findings report with fix suggestions. It sees domain and context only. It does not see constraints. **Why:** Separating fitness from validity prevents the optimizer from anchoring on rule compliance instead of quality. An artifact can satisfy every constraint and still be incoherent — the optimizer catches what rules can't express.
+4. The optimizer's only responsibility is to assess the overall coherence, fitness, and quality of the artifact within its domain and context. It produces a findings report with fix suggestions. It sees domain and context only. **Why:** Separating fitness from validity prevents the optimizer from anchoring on rule compliance instead of quality. An artifact can satisfy every constraint and still be incoherent — the optimizer catches what rules can't express.
 
-5. The validator and optimizer run in parallel every round. Both produce identically structured findings reports. Neither sees the other's report. Each looks at the artifact fresh with its own lens. **Why:** Parallel dispatch prevents cross-contamination between the validity and fitness lenses. If the validator saw the optimizer's report, it would anchor on fitness concerns and lose its strict constraint focus. If the optimizer saw the validator's report, it would anchor on violations and miss whole-artifact issues. Independent assessment from opposite directions produces richer signal for the orchestrator to merge.
+5. The validator and optimizer run in parallel every round. Both produce identically structured findings reports. Each looks at the artifact fresh through its own lens only — validator through constraints, optimizer through domain and context. **Why:** Parallel dispatch prevents cross-contamination between the validity and fitness lenses. If the validator saw the optimizer's report, it would anchor on fitness concerns and lose its strict constraint focus. If the optimizer saw the validator's report, it would anchor on violations and miss whole-artifact issues. Independent assessment from opposite directions produces richer signal for the orchestrator to merge.
 
 6. The optimizer runs a minimum of once per skill invocation — even if the validator returns clean. **Why:** An artifact that satisfies all constraints may still be unfit for its audience. Guaranteeing one optimizer pass prevents the skill from terminating on structural validity alone without ever assessing fitness.
 
@@ -82,7 +82,7 @@ These are the structural rules of the system. They govern how roles, constraints
 
 13. Recurring findings — the same issue appearing after being fixed in a previous round — escalate to the human regardless of confidence. **Why:** A finding that survives its own fix is evidence that the fix was wrong or that the issue is structural. Continuing to auto-fix it wastes cycles. The human needs to see it.
 
-14. No agent accumulates report context across rounds. Validator and optimizer look at the artifact and their respective lens (constraints or domain+context) fresh each time. Only the orchestrator holds history. **Why:** Stale context from previous rounds would bias detection. The validator might skip re-checking something it found before, assuming the fix landed. The optimizer might anchor on issues from round 1 instead of assessing the current artifact. Fresh assessment each round ensures findings reflect the artifact's actual state.
+14. Validator and optimizer start each round fresh — they read the current artifact and their respective lens (constraints or domain+context) with no memory of prior rounds. The orchestrator is the only agent that holds history across rounds. **Why:** Fresh assessment each round ensures findings reflect the artifact's actual state.
 
 ## The Loop
 

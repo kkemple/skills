@@ -26,8 +26,8 @@ Each role has fixed responsibilities defined by the template. Domain-specific co
 |------|---------------|------|
 | **Orchestrator** | Orchestrates the entire process. Dispatches generator (if needed), validator, and optimizer. Receives their reports. Merges findings into a single fix report. Dispatches fixer. Holds state across rounds. Decides when the loop is done or when to surface residual. Starts and ends the skill. | Constraints + Domain + Context + Gotchas |
 | **Generator** | First agent launched in generation mode. Interactive: interviews user about intent and goals, proposes a UI plan, iterates until confirmed, produces Block Kit JSON. Auto: analyzes input directly and produces JSON without user interaction. Runs once before the convergence loop. Does not participate in the loop. | Constraints + Domain + Context + Generation Guide + Examples + Gotchas |
-| **Validator** | Surfaces, catalogs, and assesses confidence of potential or confirmed constraint violations. Compares the artifact against constraints. Cannot judge whether findings should be actioned — only report. Runs on every round in parallel with optimizer. | Constraints + Gotchas only. Ignores domain and context. |
-| **Optimizer** | Assesses the overall coherence, fitness, and quality of the artifact within its domain and context. Produces findings with fix suggestions. Runs on every round in parallel with validator, including when validator finds nothing — guaranteeing at least one complete loop. | Examples + Domain + Context + Gotchas only. Ignores constraints. |
+| **Validator** | Surfaces, catalogs, and assesses confidence of potential or confirmed constraint violations. Reports findings with confidence scores. The orchestrator decides what is actioned. Runs on every round in parallel with optimizer. | Constraints and gotchas. |
+| **Optimizer** | Assesses the overall coherence, fitness, and quality of the artifact within its domain and context. Produces findings with fix suggestions. Runs on every round in parallel with validator, including when validator finds nothing — guaranteeing at least one complete loop. | Examples, domain, context, and gotchas. |
 | **Fixer** | Surgically applies fixes from the orchestrator's fix report. Uses minimal context: the fix report and the constraints. Makes the smallest change that resolves each finding. The only agent that touches the artifact during the loop. | Fix report + Constraints + Gotchas only. |
 
 ### Slotted per instantiation
@@ -42,21 +42,21 @@ Each role has fixed responsibilities defined by the template. Domain-specific co
 
 These are the structural rules of the system. They govern how roles, constraints, findings, and the loop relate. A domain instantiation sets its own constraints, competencies, and thresholds — but it cannot change these rules.
 
-1. All roles must be spawned as independent subagents. The invoking agent (the one the user asked to run the skill) must never assume any role itself. The orchestrator, generator, validator, optimizer, and fixer are each a separate subagent with no shared context beyond what the skill explicitly passes between them. **Why:** An agent that produced the artifact, or that has been in conversation with the user about it, cannot be an unbiased orchestrator or validator. Prior context creates anchoring — the agent already has opinions about what's right. Independence ensures the orchestrator evaluates findings on their merits against the constraint set, not through the lens of earlier decisions. The invoking agent's only job is to spawn the orchestrator subagent with the skill instructions and the artifact path (or description), then relay results to the user.
+1. All roles must be spawned as independent subagents. The orchestrator, generator, validator, optimizer, and fixer are each a separate subagent with no shared context beyond what the skill explicitly passes between them. The invoking agent's only job is to spawn the orchestrator subagent with the skill instructions and the artifact path (or description), then relay results to the user. **Why:** An agent that produced the artifact, or that has been in conversation with the user about it, cannot be an unbiased orchestrator or validator. Prior context creates anchoring — the agent already has opinions about what's right. Independence ensures the orchestrator evaluates findings on their merits against the constraint set, not through the lens of earlier decisions.
 
 2. The orchestrator owns the process. It starts the skill, dispatches agents, receives all reports, produces fix reports, holds state, and is the only agent that can end the skill or surface residual to the human. **Why:** A single orchestrator prevents race conditions, ensures consistent state, and gives the human one point of contact for the entire skill.
 
-3. The validator's only responsibility is to surface, catalog, and assess confidence of potential or confirmed violations of constraints. It compares the artifact against constraints but cannot judge whether findings should be actioned — only report them. It sees constraints only. It does not see domain or context. **Why:** Separating detection from judgment prevents the validator from self-censoring findings based on domain conventions. A constraint violation is a constraint violation regardless of whether the domain considers it acceptable — the orchestrator resolves that tension with full context.
+3. The validator's only responsibility is to surface, catalog, and assess confidence of potential or confirmed violations of constraints. It reports findings with confidence scores. The orchestrator decides what is actioned. It sees constraints and gotchas. **Why:** Separating detection from judgment prevents the validator from self-censoring findings based on domain conventions. A constraint violation is a constraint violation regardless of whether the domain considers it acceptable — the orchestrator resolves that tension with full context.
 
-4. The optimizer's only responsibility is to assess the overall coherence, fitness, and quality of the artifact within its domain and context. It produces a findings report with fix suggestions. It sees domain and context only. It does not see constraints. **Why:** Separating fitness from validity prevents the optimizer from anchoring on rule compliance instead of quality. An artifact can satisfy every constraint and still be incoherent — the optimizer catches what rules can't express.
+4. The optimizer's only responsibility is to assess the overall coherence, fitness, and quality of the artifact within its domain and context. It produces a findings report with fix suggestions. It sees examples, domain, context, and gotchas. **Why:** Separating fitness from validity lets the optimizer focus purely on whether the artifact is coherent, fit, and high-quality for its audience. An artifact can satisfy every constraint and still be incoherent — the optimizer catches what rules can't express.
 
-5. The validator and optimizer run in parallel every round. Both produce identically structured findings reports. Neither sees the other's report. Each looks at the artifact fresh with its own lens. **Why:** Parallel dispatch prevents cross-contamination between the validity and fitness lenses. If the validator saw the optimizer's report, it would anchor on fitness concerns and lose its strict constraint focus. If the optimizer saw the validator's report, it would anchor on violations and miss whole-artifact issues. Independent assessment from opposite directions produces richer signal for the orchestrator to merge.
+5. The validator and optimizer run in parallel every round, each dispatched independently by the orchestrator with only its own lens (constraints / domain+context) and the artifact. Both produce identically structured findings reports. **Why:** Independent parallel assessment keeps each lens pure — the validator stays strictly on constraints, the optimizer stays strictly on whole-artifact fitness — producing richer signal for the orchestrator to merge.
 
 6. The optimizer runs a minimum of once per skill invocation — even if the validator returns clean. **Why:** An artifact that satisfies all constraints may still be unfit for its audience. Guaranteeing one optimizer pass prevents the skill from terminating on structural validity alone without ever assessing fitness.
 
 7. The orchestrator receives both reports, evaluates all findings, and merges them into a single fix report. The fix report is the only input the fixer receives. The orchestrator resolves conflicts between validator and optimizer findings. **Why:** The orchestrator is the only agent with the full picture (constraints + domain + context). Conflicts between validity and fitness — a validator finding that the optimizer would dismiss, or an optimizer finding that would violate a constraint — can only be resolved by an agent that sees both sides.
 
-8. The fixer's only responsibility is to surgically apply fixes from the orchestrator's fix report. It uses minimal context: the fix report and the constraints. It makes the smallest change that resolves each finding. It is the only agent that touches the artifact during the convergence loop. (The generator writes the artifact before the loop begins, if applicable.) **Why:** Minimal context prevents the fixer from second-guessing the orchestrator's decisions or expanding scope beyond what was approved. Smallest-change discipline minimizes blast radius — each fix is isolated, and any interaction effects are caught by the validator on the next round.
+8. The fixer's only responsibility is to surgically apply fixes from the orchestrator's fix report. It uses minimal context: the fix report and the constraints. It makes the smallest change that resolves each finding. It is the only agent that touches the artifact during the convergence loop. (The generator writes the artifact before the loop begins, if applicable.) **Why:** Minimal context keeps the fixer focused on applying the approved fix report verbatim and making the smallest change that resolves each finding. Each fix is isolated, and any interaction effects are caught by the validator on the next round.
 
 9. If the orchestrator's merged fix report is empty (neither validator nor optimizer found anything actionable), the skill is done. **Why:** Empty fix report means the artifact satisfies constraints (validator clean) and is fit for purpose (optimizer clean). There is nothing left to improve within the skill's defined boundaries.
 
@@ -68,9 +68,9 @@ These are the structural rules of the system. They govern how roles, constraints
 
 13. Recurring findings — the same issue appearing after being fixed in a previous round — escalate to the human regardless of confidence. **Why:** A finding that survives its own fix is evidence that the fix was wrong or that the issue is structural. Continuing to auto-fix it wastes cycles. The human needs to see it.
 
-14. No agent accumulates report context across rounds. Validator and optimizer look at the artifact and their respective lens (constraints or domain+context) fresh each time. Only the orchestrator holds history. **Why:** Stale context from previous rounds would bias detection. The validator might skip re-checking something it found before, assuming the fix landed. The optimizer might anchor on issues from round 1 instead of assessing the current artifact. Fresh assessment each round ensures findings reflect the artifact's actual state.
+14. No agent accumulates report context across rounds. Validator and optimizer look at the artifact and their respective lens (constraints or domain+context) fresh each time. Only the orchestrator holds history. **Why:** Fresh assessment each round ensures findings reflect the artifact's actual current state.
 
-15. When the skill is invoked in generation mode, the orchestrator dispatches the Generator as the first agent. The Generator operates in interactive mode (interviews user, proposes UI plan, iterates until confirmed, produces JSON) or auto mode (analyzes input directly, produces JSON without user interaction). The Generator runs exactly once. It is never re-dispatched during the convergence loop. **Why:** Generation is a production task, not an evaluation task. The convergence loop evaluates and fixes. Mixing generation into the loop would create unbounded behavior — a fundamentally broken artifact would trigger regeneration, which resets the loop, which could trigger regeneration again. One generation pass followed by bounded convergence ensures termination. The interactive/auto split exists because the skill serves two consumers: humans who need help figuring out what to build, and LLMs or scripts that already know what they need.
+15. When the skill is invoked in generation mode, the orchestrator dispatches the Generator as the first agent. The Generator operates in interactive mode (interviews user, proposes UI plan, iterates until confirmed, produces JSON) or auto mode (analyzes input directly, produces JSON without user interaction). The Generator runs exactly once, before the convergence loop begins. **Why:** Generation is a production task, not an evaluation task. The convergence loop evaluates and fixes. One generation pass followed by bounded convergence ensures termination. The interactive/auto split exists because the skill serves two consumers: humans who need help figuring out what to build, and LLMs or scripts that already know what they need.
 
 ## The Loop
 
@@ -107,7 +107,7 @@ Before pre-flight checks, the orchestrator scaffolds the workspace and tracks wh
 - [ ] Check if `.claude/blockkit-builder-workspace/tmp/` exists; if not, create it and record `created_tmp_dir = true`
 - [ ] Hold the three creation flags in orchestrator state for the entire run
 
-The workspace is created in the current working directory of the project where the skill is invoked, never inside the skill repo.
+The workspace is created in the current working directory of the project where the skill is invoked.
 
 ### Mode A: Existing artifact
 
@@ -128,7 +128,7 @@ The user wants Block Kit JSON produced, not an existing file verified.
 - [ ] Generation mode determined: interactive (default — user wants help) or auto (input is clear, or invoked by another LLM)
 - [ ] Orchestrator dispatches Generator → artifact produced at `.claude/blockkit-builder-workspace/tmp/artifact.json` → post-generation pre-flight (same checks as Mode A)
 
-If pre-flight fails in either mode, stop and report what's missing. Do not enter the loop.
+If pre-flight fails in either mode, stop and report what's missing.
 
 ## Output handoff
 
@@ -144,7 +144,7 @@ After the convergence loop terminates successfully, before cleanup:
 
 The very last action on successful completion. Tears down only what this run created, in reverse order using the tracked flags from workspace setup:
 
-1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (`artifact.json`, etc.). The permanent completion report in `.claude/blockkit-builder-workspace/logs/` is NOT deleted — it accumulates across runs.
+1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (`artifact.json`, etc.). The completion report in `.claude/blockkit-builder-workspace/logs/` persists across runs — cleanup only touches files this run created.
 2. If `created_tmp_dir` is true, delete `.claude/blockkit-builder-workspace/tmp/`
 3. If `created_workspace_dir` is true, delete `.claude/blockkit-builder-workspace/`
 4. If `created_claude_dir` is true, delete `.claude/`
@@ -330,7 +330,7 @@ blockkit-builder/
     └── fixtures/                 # Test artifact files
 ```
 
-**Runtime workspace** (created in the invoking project, NEVER inside the skill repo):
+**Runtime workspace** (created in the invoking project):
 
 ```
 <invoking-project>/

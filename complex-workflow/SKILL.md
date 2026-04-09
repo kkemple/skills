@@ -7,17 +7,19 @@ description: "Plan and execute complex multi-step tasks using a five-role agent 
 
 A multi-phase multi-role agent system for planning and executing any complex multi-step task. Five isolated agents — Orchestrator, Planner, Auditor, Executor, Drift Monitor — each with scoped visibility and fixed responsibilities, coordinate through structured handoffs to complete the task.
 
-All five roles must be spawned as independent subagents. The invoking agent must never assume any role itself. Spawn the Orchestrator subagent with the user's task description and the path to this skill. The Orchestrator runs the entire process. Relay results to the user.
+All five roles must be spawned as independent subagents. The invoking agent's only action is to spawn the Orchestrator subagent with the task description and the path to this skill, then relay the Orchestrator's final result to the user.
 
 ## Roles
+
+Each role receives exactly the context listed in Sees and nothing else — the Orchestrator supplies the scope.
 
 | Role | Responsibility | Sees |
 |------|---------------|------|
 | **Orchestrator** | Owns all state. Dispatches all agents. Maintains the task list. Brokers all communication. Decides whether to course correct, re-anchor, or escalate to human. Only agent that can end the process. | Everything — the plan, all Auditor reports, all task state, all execution history, Drift Monitor scores |
-| **Planner** | Iterates with the user to produce a detailed step-by-step plan. Wiped after handoff. | User intent, the codebase. Does NOT see: execution state, Auditor reports, Executor output. |
-| **Auditor** | Judges every step against the plan — before and after execution. Never executes. | The full approved plan and the Executor's execution plan and output for the current step. Does NOT see: the Planner's conversation, the Orchestrator's escalation decisions, previous course corrections. |
-| **Executor** | Executes exactly what was approved. Nothing more. Never judges its own work. | The approved plan for the current step. Does NOT see: the Planner's reasoning, the Auditor's evaluation criteria, previous Auditor reports on other steps. |
-| **Drift Monitor** | Measures semantic distance between the approved plan and the Orchestrator's current working state. Returns a context pollution score. Does not interpret or recommend. | The approved plan (anchor) and the Orchestrator's current accumulated state summary. Does NOT see: individual Auditor reports, Executor plans or output, course correction details, the Planner's conversation. |
+| **Planner** | Iterates with the user to produce a detailed step-by-step plan. Wiped after handoff. | User intent and the codebase. |
+| **Auditor** | Judges every step against the plan — before and after execution. | The full approved plan and the Executor's execution plan and output for the current step. |
+| **Executor** | Executes exactly what was approved. | The approved plan for the current step. |
+| **Drift Monitor** | Measures semantic distance between the approved plan and the Orchestrator's current working state. Returns only the numeric context pollution score — output is the score and nothing accompanies it. | The approved plan (anchor) and the Orchestrator's current accumulated state summary. |
 
 ## Phases
 
@@ -31,7 +33,7 @@ The Orchestrator reads the plan, creates a task per step (verbatim descriptions)
 
 ### Phase 3: Execute — Orchestrator brokers Executor ↔ Auditor
 
-For each step: the Orchestrator dispatches the Executor to prepare an execution plan, passes it to the Auditor for pre-execution audit, loops until approved, tells the Executor to execute, passes the result to the Auditor for post-execution audit. After each completed step, the Orchestrator dispatches the Drift Monitor. All communication is Orchestrator-mediated — no agent talks directly to another.
+For each step: the Orchestrator dispatches the Executor to prepare an execution plan, passes it to the Auditor for pre-execution audit, loops until approved, tells the Executor to execute, passes the result to the Auditor for post-execution audit. After each completed step, the Orchestrator dispatches the Drift Monitor. All communication is Orchestrator-mediated.
 
 ### Phase 4: Error Recovery — Orchestrator decides
 
@@ -48,7 +50,7 @@ After each completed step and each course correction, the Drift Monitor measures
 
 ## Runtime workspace
 
-All temp files (plan handoff, Auditor reports, completion log) are written to a workspace directory in the invoking project's working directory, never inside the skill repo:
+All temp files (plan handoff, Auditor reports, completion log) are written to a workspace directory in the invoking project's current working directory:
 
 ```
 .claude/complex-workflow-workspace/tmp/
@@ -149,3 +151,4 @@ This is a permanent record — unsummarized, complete.
 | `agents/auditor.md` | Auditor role instructions | Auditor subagent |
 | `agents/drift-monitor.md` | Drift Monitor role instructions | Drift Monitor subagent |
 | `references/gotchas.md` | Known pitfalls from real runs | All agents |
+

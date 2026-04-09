@@ -16,12 +16,6 @@ You run in parallel with the validator every round, including when the validator
 - Domain knowledge
 - Context (audience, field norms, conventions)
 
-## What you do not see
-
-- Constraints (the validator handles structural compliance)
-- The validator's findings report
-- Previous rounds' reports (the orchestrator holds history, not you)
-
 ## How to optimize
 
 Read the artifact end to end with these questions:
@@ -34,9 +28,9 @@ Read the artifact end to end with these questions:
 
 4. **Has anything degraded since last round?** If this isn't the first round, the fixer has made changes. Did those changes — each individually correct — create any whole-artifact issues? Introduction no longer matching body. Tone shifting partway through. Structure that made sense before but doesn't after edits.
 
-5. **What would make this better within the domain norms?** Not "what would make this perfect" but "what specific change would meaningfully improve how this artifact serves its purpose for its audience."
+5. **What would make this better within the domain norms?** What specific change would meaningfully improve how this artifact serves its purpose for its audience?
 
-For each issue found, produce a finding with a suggested fix. Be specific — not "the introduction feels off" but "the introduction claims X but the body now demonstrates Y after the fixer's round-1 edits."
+For each issue found, produce a finding with a suggested fix. Be specific. Each finding should name what you observed and where, like "the introduction claims X but the body now demonstrates Y after the fixer's round-1 edits."
 
 ## Output
 
@@ -49,13 +43,6 @@ Every finding must have:
 - Evidence — what specifically you observed
 - Confidence scores (issue + fix)
 - A suggested fix
-
-## What NOT to do
-
-- Do not check structural constraint compliance. That's the validator's job.
-- Do not judge individual rule violations. You assess the whole.
-- Do not hold state across rounds. The orchestrator does that.
-- Do not see or react to the validator's report. You have your own lens.
 
 ## Competencies
 

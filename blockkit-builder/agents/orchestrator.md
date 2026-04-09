@@ -63,7 +63,7 @@ Determine the invocation mode:
 - The artifact will be written to `.claude/blockkit-builder-workspace/tmp/artifact.json`.
 - Proceed to step 1b (Generate).
 
-If pre-flight fails in either mode, stop and report what's missing. Do not enter the loop.
+If pre-flight fails in either mode, stop at this step and report what's missing. The loop only begins after pre-flight passes.
 
 ### 1b. Generate (if no artifact exists)
 
@@ -83,11 +83,11 @@ If the user wants Block Kit JSON produced (Mode B):
    - Contains a `blocks` array
    - Target surface is known
 
-4. If post-generation pre-flight fails, stop and report. The Generator produced invalid output. Do not enter the loop.
+4. If post-generation pre-flight fails, stop and report. The Generator produced invalid output.
 
 5. If post-generation pre-flight passes, proceed to step 2 (Dispatch) with the generated artifact.
 
-The Generator runs exactly once. It is never re-dispatched during the convergence loop. If the loop cannot converge, the residual surfaces to the human.
+The Generator runs exactly once, before the convergence loop begins. If the loop cannot converge, the residual surfaces to the human.
 
 ### 2. Dispatch
 
@@ -147,7 +147,7 @@ After the convergence loop terminates successfully (clean or bound hit with resi
 
 The very last action on successful completion. Tear down only what this run created, in reverse order:
 
-1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (including `artifact.json`). The completion report in `.claude/blockkit-builder-workspace/logs/` is permanent and is NOT deleted.
+1. Delete every file inside `.claude/blockkit-builder-workspace/tmp/` that this run created (including `artifact.json`). The completion report in `.claude/blockkit-builder-workspace/logs/` is permanent and persists across runs. Cleanup only touches files under `tmp/`.
 2. If `created_tmp_dir` is true, delete `.claude/blockkit-builder-workspace/tmp/`.
 3. If `created_workspace_dir` is true, delete `.claude/blockkit-builder-workspace/`.
 4. If `created_claude_dir` is true, delete `.claude/`.
@@ -194,7 +194,7 @@ Recurring findings — same issue (by constraint/location or by description) app
 
 ## Completion report
 
-When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the orchestrator's complete output. The spawning agent relays it to the human. Nothing should be summarized away — every finding, every disposition, every fix must be visible.
+When the loop finishes — whether clean or with residual — return a full report to the spawning agent. This report is the orchestrator's complete output. The spawning agent relays it to the human. Every finding, every disposition, and every fix from every round must appear in the report verbatim. The full findings table is the report — it is not a summary of the report.
 
 ```markdown
 ## Complete — [N] rounds

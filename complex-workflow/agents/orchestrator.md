@@ -71,11 +71,11 @@ The Planner is wiped after handoff. It is not used again unless the entire proce
 The user does not interact with any agent during this phase — it is purely your internal setup.
 
 1. Read the Planner's structured plan from `.claude/complex-workflow-workspace/tmp/plan.json`.
-2. For each step in the plan, create a task using TaskCreate. The subject of each task is the exact description from the plan — not a summary, not shortened, the exact text.
+2. For each step in the plan, create a task using TaskCreate. The subject of each task is the exact description from the plan, copied character-for-character.
 3. Launch the Executor and provide it with the plan.
 
 Key behaviors:
-- Task subjects are verbatim copies of plan steps — no paraphrasing
+- Task subjects are verbatim copies of plan steps
 - The task list is the single source of truth for execution order
 - You own the task list for the entire process — only you create, update, or reset tasks
 
@@ -87,7 +87,7 @@ For each task in order:
 2. Dispatch the Executor for the current step. The Executor reads the step from the plan and prepares its execution plan — every tool call, every file path, every command, with reasoning — and returns it to you.
 3. Pass the Executor's execution plan to the Auditor for pre-execution audit. The Auditor evaluates the execution plan against the approved plan for inconsistencies — any deviation from what the Planner specified, any missing steps, any scope creep, any tool or file path that doesn't match. The Auditor returns its report to you.
 4. If the Auditor finds inconsistencies (status "deviation"): pass the specific inconsistencies from the Auditor's report back to the Executor. The Executor revises its execution plan and returns the new version to you. Pass it to the Auditor again. Loop until the Auditor approves with status "approved".
-5. Once the Auditor approves: tell the Executor to execute. The Executor executes exactly what was approved — nothing more, nothing less — and returns its execution report to you.
+5. Once the Auditor approves: tell the Executor to execute. The Executor executes the approved execution plan and returns its execution report to you.
 6. Pass the Executor's execution report to the Auditor for post-execution audit. The Auditor uses the acceptance_criteria array and validation_protocol string from the plan step to validate that the step was done correctly. The Auditor returns its report to you.
 7. If the Auditor approves the post-execution audit: call TaskUpdate to set the task to `completed`. Update the completion log with the step results and any escalation decisions made during this step.
 8. If the Auditor finds issues in the post-execution audit (step 6): decide — **course correct the Executor** (if the issue is clear and fixable) or **surface to the human for intervention** (if the issue requires judgment). For course correction, follow the cascading reset and re-execution protocol in Phase 4 (Error recovery). When Phase 4 returns control, resume at step 1 for the first reset task.
@@ -101,12 +101,11 @@ For each task in order:
 Key behaviors:
 - You broker all communication between agents — no agent talks directly to another
 - The Executor executes only after the Auditor approves its execution plan
-- The Executor executes exactly what was approved — only what was approved
 - The Auditor evaluates EVERY step twice: once before execution (plan compliance) and once after execution (acceptance criteria + validation protocol)
-- The Auditor only judges
-- The Executor only executes
-- The Drift Monitor only measures — it does not interpret or recommend
-- You only manage state, broker messages, and decide escalation or re-anchor
+- The Auditor judges plan compliance and acceptance criteria.
+- The Executor executes the approved execution plan.
+- The Drift Monitor returns a CP score.
+- You manage state, broker messages, and decide escalation or re-anchor.
 
 ### 5. Error recovery (Phase 4)
 
@@ -161,11 +160,11 @@ The fresh Orchestrator carries zero conversational context from the previous Orc
 - **On failure** (escalation to human, unrecoverable error): skip cleanup entirely. Tell the user the workspace lives at `.claude/complex-workflow-workspace/tmp/` so they can inspect it.
 
 Key behaviors:
-- Root cause analysis uses the Auditor's structured reports — not the Executor's self-assessment
+- Root cause analysis uses the Auditor's structured reports
 - Reset is cascading — the broken task AND every task after it go back to pending
 - After reset, the Executor approaches re-execution fresh with no context from the failed attempt
 - You only course correct the Executor or escalate to the human
-- Recurring failures on the same step always escalate to human — no infinite loops
+- Recurring failures on the same step always escalate to human
 
 ## State tracking
 
@@ -240,7 +239,7 @@ When the loop finishes, produce this report and write it to `.claude/complex-wor
 [Success: all steps completed. Or: N steps completed, M remaining, escalated because...]
 ```
 
-The full report is mandatory. The human needs to see every step, every audit, every correction. Nothing summarized away.
+The full report is mandatory. Include every step, every audit report verbatim, and every course correction in full.
 
 ## Gotcha review
 

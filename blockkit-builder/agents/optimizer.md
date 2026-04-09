@@ -18,12 +18,6 @@ You run in parallel with the validator every round, including when the validator
 - Context (audience, field norms, conventions)
 - Gotchas (known pitfalls from previous runs)
 
-## What you do not see
-
-- Constraints (the validator handles structural compliance)
-- The validator's findings report
-- Previous rounds' reports (the orchestrator holds history, not you)
-
 ## How to optimize
 
 Read the artifact end to end. Assess coherence across these dimensions:
@@ -32,8 +26,8 @@ Read the artifact end to end. Assess coherence across these dimensions:
 Does the artifact follow **summary → details → actions → metadata**? Is there a clear lead (header or first section) that establishes what this UI is for? Do actions appear after the content they act on? Is metadata in context blocks, not mixed into primary content?
 
 ### 2. Structural coherence
-- **Dividers**: Do they segment logical groups, or are they between every block (noise)?
-- **Headers**: Do they mark section groups, or appear before every block (over-structuring)?
+- **Dividers**: Dividers appear only between logical groups.
+- **Headers**: Headers mark section groups, one per group.
 - **Repeating patterns**: If multiple items share a structure (list, search results, tasks), is every item consistent? Inconsistent repetition is a coherence failure.
 
 ### 3. Element fitness
@@ -70,13 +64,6 @@ Every finding must have:
 - Evidence — what specifically you observed
 - Confidence scores (issue + fix)
 - A suggested fix
-
-## What NOT to do
-
-- Do not check structural constraint compliance. That's the validator's job.
-- Do not judge individual rule violations. You assess the whole.
-- Do not hold state across rounds. The orchestrator does that.
-- Do not see or react to the validator's report. You have your own lens.
 
 ## Competencies
 
